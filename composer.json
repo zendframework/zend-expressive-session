@@ -1,0 +1,57 @@
+{
+    "name": "zendframework/zend-expressive-session",
+    "description": "Description of project goes here",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "expressive",
+        "zf",
+        "zendframework"
+    ],
+    "support": {
+        "docs": "https://docs.zendframework.com/zend-expressive-session/",
+        "issues": "https://github.com/zendframework/zend-expressive-session/issues",
+        "source": "https://github.com/zendframework/zend-expressive-session",
+        "slack": "https://zendframework-slack.herokuapp.com",
+        "forum": "https://discourse.zendframework.com/c/questions/expressive"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": "^7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0.9",
+        "zendframework/zend-coding-standard": "~1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zend\\Expressive\\Session\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZendTest\\Expressive\\Session\\": "test/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
+        "zf": {
+            "config-provider": "Zend\\Expressive\\Session\\ConfigProvider"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "upload-coverage": "coveralls -v"
+    }
+}
