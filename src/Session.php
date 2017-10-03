@@ -7,18 +7,50 @@
 
 namespace Zend\Expressive\Session;
 
-class Session
+/**
+ * Notes on lazy session:
+ *
+ * - implement it pretty much exactly like it is in storageless, but using
+ *   our interface. Use a static method as constructor, to ensure it cannot be
+ *   overridden.
+ * - update the session middleware to create a lazy session, using a callback
+ *   that starts the session. When middleware operations are complete, it should
+ *   persist the session.
+ */
+class Session implements SessionInterface
 {
-    use SessionDataTrait;
+    use SessionCommonTrait;
 
+    /**
+     * Current data within the session.
+     *
+     * @var array
+     */
     private $data;
+
+    /**
+     * @var string
+     */
     private $id;
+
+    /**
+     * Original data provided to the constructor.
+     *
+     * @var array
+     */
+    private $originalData;
+
+    /**
+     * @var SegmentInterface[]
+     */
     private $segments = [];
 
     public function __construct(string $id, array $data)
     {
         $this->id = $id;
-        $this->data = $data;
+        $this->data = $this->originalData = $data;
+
+        $this->prepareFlashMessages();
     }
 
     /**
@@ -41,13 +73,12 @@ class Session
 
     /**
      * @param mixed $default Default value to return if $name does not exist.
+     * @return mixed
      * @throws Exception\SessionSegmentConflictException if $name refers to a known session segment.
      */
     public function get(string $name, $default = null)
     {
-        if (isset($this->segments[$name])) {
-            throw Exception\SessionSegmentConflictException::whenRetrieving($name);
-        }
+        $this->assertNotSegment($name, 'whenRetrieving');
         return $this->data[$name] ?? $default;
     }
 
@@ -57,10 +88,8 @@ class Session
      */
     public function set(string $name, $value) : void
     {
-        if (isset($this->segments[$name])) {
-            throw Exception\SessionSegmentConflictException::whenSetting($name);
-        }
-        $this->data[$name] = $value;
+        $this->assertNotSegment($name, 'whenSetting');
+        $this->data[$name] = self::extractSerializableValue($value);
     }
 
     /**
@@ -68,9 +97,7 @@ class Session
      */
     public function unset(string $name) : void
     {
-        if (isset($this->segments[$name])) {
-            throw Exception\SessionSegmentConflictException::whenDeleting($name);
-        }
+        $this->assertNotSegment($name, 'whenDeleting');
         unset($this->data[$name]);
     }
 
@@ -78,7 +105,7 @@ class Session
      * @throws Exception\InvalidSessionSegmentDataException when data exists for the
      *     segment, but it is not an array.
      */
-    public function segment(string $name) : Segment
+    public function segment(string $name) : SegmentInterface
     {
         if (isset($this->segments[$name])) {
             return $this->segments[$name];
@@ -94,8 +121,83 @@ class Session
         return $this->segments[$name];
     }
 
+    public function hasChanged() : bool
+    {
+        $segmentsChanged = array_reduce($this->segments, function (bool $hasChanged, Segment $segment) {
+            if ($hasChanged) {
+                return $hasChanged;
+            }
+            return $segment->hasChanged();
+        }, false);
+
+        return $this->data !== $this->originalData
+            && $segmentsChanged;
+    }
+
     public function regenerateId(): void
     {
         $this->id = static::generateToken();
+    }
+
+    /**
+     * Prepares flash messages for this request.
+     *
+     * Loops through all data, identifying nested arrays that have the
+     * Segment::FLASH_NEXT key, passing those values to
+     * prepareFlashMessagesForSegment(), and re-assigning the value returned
+     * from that method to the data for that segment.
+     */
+    private function prepareFlashMessages() : void
+    {
+        foreach ($this->data as $key => $value) {
+            if (! is_array($value)
+                || ! isset($value[Segment::FLASH_NEXT])
+            ) {
+                continue;
+            }
+
+            $this->data[$key] = $this->prepareFlashMessagesForSegment($key, $value);
+        }
+    }
+
+    /**
+     * Prepares flash messages for a given segment.
+     *
+     * Resets the Segment::FLASH_NOW value to an empty array, and loops through
+     * the Segment::FLASH_NEXT values, adding them to Segment::FLASH_NOW.
+     *
+     * If the value contains a `hops` value greater than 1, it reassigns its
+     * value in Segment::FLASH_NEXT, after first decrementing the value.
+     * Otherwise, it unsets the entry in Segment::FLASH_NEXT.
+     */
+    private function prepareFlashMessagesForSegment(string $key, array $segmentData) : array
+    {
+        $segmentData[Segment::FLASH_NOW] = [];
+        foreach ($segmentData[Segment::FLASH_NEXT] as $key => $data) {
+            $segmentData[Segment::FLASH_NOW][$key] = $data['value'];
+
+            if ($data['hops'] === 1) {
+                unset($segmentData[Segment::FLASH_NEXT][$key]);
+                continue;
+            }
+
+            $data['hops'] -= 1;
+            $segmentData[Segment::FLASH_NEXT][$key] = $data;
+        }
+        return $segmentData;
+    }
+
+    /**
+     * Assert that a value by $name is not a segment.
+     *
+     * @throws Exception\SessionSegmentConflictException if a segment by $name is found.
+     */
+    private function assertNotSegment(string $name, string $event)
+    {
+        if (! isset($this->segments[$name])) {
+            return;
+        }
+        $factory = [Exception\SessionSegmentConflictException::class, $event];
+        throw $factory($name);
     }
 }
