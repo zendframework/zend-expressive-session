@@ -74,6 +74,10 @@ final class LazySession implements SessionInterface
 
     public function hasChanged() : bool
     {
+        if (! $this->proxiedSession) {
+            return false;
+        }
+
         return $this->getProxiedSession()->hasChanged();
     }
 

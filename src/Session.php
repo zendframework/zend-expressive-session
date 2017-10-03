@@ -41,13 +41,20 @@ class Session implements SessionInterface
     private $originalData;
 
     /**
+     * Original ID provided to the constructor.
+     *
+     * @var string
+     */
+    private $originalId;
+
+    /**
      * @var SegmentInterface[]
      */
     private $segments = [];
 
     public function __construct(string $id, array $data)
     {
-        $this->id = $id;
+        $this->id  = $this->originalId = $id;
         $this->data = $this->originalData = $data;
 
         $this->prepareFlashMessages();
@@ -123,15 +130,20 @@ class Session implements SessionInterface
 
     public function hasChanged() : bool
     {
-        $segmentsChanged = array_reduce($this->segments, function (bool $hasChanged, Segment $segment) {
+        if ($this->id !== $this->originalId) {
+            return true;
+        }
+
+        if ($this->data !== $this->originalData) {
+            return true;
+        }
+
+        return array_reduce($this->segments, function (bool $hasChanged, Segment $segment) {
             if ($hasChanged) {
                 return $hasChanged;
             }
             return $segment->hasChanged();
         }, false);
-
-        return $this->data !== $this->originalData
-            && $segmentsChanged;
     }
 
     public function regenerateId(): void
