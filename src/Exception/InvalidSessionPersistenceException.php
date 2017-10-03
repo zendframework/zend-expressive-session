@@ -22,4 +22,16 @@ class InvalidSessionPersistenceException extends InvalidArgumentException implem
             SessionPersistenceInterface::class
         ));
     }
+
+    public static function forType($invalidPersistence) : self
+    {
+        return new self(sprintf(
+            'Session persistence provided to "%s" must be of type "%s" '
+            . 'or a string class name of a %s implementation; received "%s"',
+            SessionMiddleware::class,
+            SessionPersistenceInterface::class,
+            SessionPersistenceInterface::class,
+            gettype($invalidPersistence)
+        ));
+    }
 }
