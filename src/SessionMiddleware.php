@@ -14,45 +14,59 @@ use Psr\Http\Message\ResponseInterface;
 
 class SessionMiddleware implements MiddlewareInterface
 {
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
+    /**
+     * @var null|SessionPersistenceInterface
+     */
+    private $persistence;
+
+    /**
+     * @var null|string Name of SessionPersistenceInterface implementation
+     *     to use, if an instance was not provided.
+     */
+    private $persistenceClass;
+
+    /**
+     * @var string|SessionPersistenceInterface $persistenceClassOrInstance
+     * @throws Exception\InvalidSessionPersistenceException if $persistenceClassOrInstance is of an invalid type
+     * @throws Exception\InvalidSessionPersistenceException if $persistenceClassOrInstance is an object or class
+     *     that does not implement SessionPersistenceInterface
+     */
+    public function __construct($persistenceClassOrInstance = PhpSessionPersistence::class)
     {
-        $cookies = $request->getCookieParams();
-        $id = $cookies[session_name()] ?? Session::generateToken();
-
-        $this->startSession($id);
-
-        $session = new Session($id, $_SESSION);
-
-        $response = $delegate->process($request->withAttribute(Session::class, $session));
-
-        if ($id !== $session->getId()) {
-            $this->startSession($session->getId());
+        if ($persistenceClassOrInstance instanceof SessionPersistenceInterface) {
+            $this->persistence = $persistenceClassOrInstance;
+            return;
         }
 
-        $_SESSION = $session->toArray();
-        session_write_close();
-
-        if (empty($_SESSION)) {
-            return $response;
+        if (! is_string($persistenceClassOrInstance) && ! is_object($persistenceClassOrInstance)) {
+            throw Exception\InvalidSessionPersistenceException::forType($persistenceClassOrInstance);
         }
 
-        return $response->withHeader(
-            'Set-Cookie',
-            sprintf(
-                '%s=%s; path=%s',
-                session_name(),
-                $session->getId(),
-                ini_get('session.cookie_path')
-            )
-        );
+        if (! class_exists($persistenceClassOrInstance)
+            || ! in_array(SessionPersistenceInterface::class, class_implements($persistenceClassOrInstance, true))
+        ) {
+            throw Exception\InvalidSessionPersistenceException::forClass($persistenceClassOrInstance);
+        }
+
+        $this->persistenceClass = $persistenceClassOrInstance;
     }
 
-    private function startSession(string $id) : void
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
-        session_id($id);
-        session_start([
-            'use_cookies'      => false,
-            'use_only_cookies' => true,
-        ]);
+        $persistence = $this->createPersistence($request);
+        $session = new LazySession($persistence);
+
+        $response = $delegate->process($request->withAttribute(SessionInterface::class, $session));
+
+        return $persistence->persistSession($session, $response);
+    }
+
+    private function createPersistence(ServerRequestInterface $request) : SessionPersistenceInterface
+    {
+        $factory = $this->persistence
+            ? [$this->persistence, 'createNewInstanceFromRequest']
+            : [$this->persistenceClass, 'createFromRequest'];
+
+        return $factory($request);
     }
 }

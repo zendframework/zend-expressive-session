@@ -7,21 +7,12 @@
 
 namespace Zend\Expressive\Session;
 
-class ConfigProvider
-{
-    public function __invoke() : array
-    {
-        return [
-            'dependencies' => $this->getDependencies(),
-        ];
-    }
+use Psr\Container\ContainerInterface;
 
-    public function getDependencies() : array
+class SessionMiddlewareFactory
+{
+    public function __invoke(ContainerInterface $container) : SessionMiddleware
     {
-        return [
-            'factories' => [
-                SessionMiddleware::class => SessionMiddlewareFactory::class,
-            ],
-        ];
+        return new SessionMiddleware(PhpSessionPersistence::class);
     }
 }
