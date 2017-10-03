@@ -51,6 +51,85 @@ $app->post('/contact/process', [
 ]);
 ```
 
+Once the middleware is in place, you can access the session container from your
+other middleware via the request attribute
+`Zend\Expressive\Session\SessionInterface`:
+
+```php
+use Zend\Expressive\Session\SessionInterface;
+
+$session = $request->getAttribute(SessionInterface::class);
+$session->get('some-key');
+$session->unset('some-key');
+$session->set('some-key', $value);
+```
+
+### Segments, flash, and CSRF
+
+You may also use session _segments_. These are _namespaced_ containers of
+session data, and they provide a few additional features besides basic session
+data:
+
+- Ability to create and access flash messages, with configurable hops.
+- Ability to generate and validate CSRF tokens.
+
+To create or access a segment:
+
+```php
+$formData = $session->segment('form');
+```
+
+To create a flash message available on the next request:
+
+```php
+$formData->flash('errors', $errors);
+```
+
+To allow access to a flash message over 3 requests:
+
+```php
+$formData->flash('errors', $errors, 3);
+```
+
+Flash messages are only accessible on the _next_ request; to allow access to
+them in the _current_ request, use `flashNow()`, which has the same signature:
+
+```php
+$formData->flashNow('errors', $errors);
+```
+
+If you decide you want to keep flash messages for an additional hop:
+
+```php
+$formData->persistFlash();
+```
+
+CSRF tokens are useful for preventing CSRF attacks.  To generate a CSRF token:
+
+```php
+$csrf = $formData->generateCsrfToken();
+```
+
+To validate a token submitted to you:
+
+```php
+if (! $formData->validateCsrfToken($submittedToken)) {
+    // ERROR!
+}
+```
+
+By default, these use the key `__csrf`; you may specify a different key by
+passing a key to either method:
+
+```php
+$csrf = $formData->generateCsrfToken('CSRF');
+
+// next request:
+if (! $formData->validateCsrfToken($submittedToken, 'CSRF')) {
+    // ERROR!
+}
+```
+
 ### Custom persistence
 
 To use custom persistence — e.g., a JWT-based approach — implement
@@ -130,3 +209,4 @@ return [
     ],
 ];
 ```
+
