@@ -9,8 +9,6 @@ namespace Zend\Expressive\Session;
 
 class Session implements SessionInterface
 {
-    use SessionCommonTrait;
-
     /**
      * Current data within the session.
      *
@@ -38,6 +36,20 @@ class Session implements SessionInterface
     public function __construct(array $data)
     {
         $this->data = $this->originalData = $data;
+    }
+
+    /**
+     * Convert a value to a JSON-serializable value.
+     *
+     * This value should be used by `set()` operations to ensure that the values
+     * within a session are serializable across any session adapter.
+     *
+     * @param mixed $value
+     * @return null|bool|int|float|string|array|\stdClass
+     */
+    public static function extractSerializableValue($value)
+    {
+        return json_decode(json_encode($value, \JSON_PRESERVE_ZERO_FRACTION), true);
     }
 
     /**

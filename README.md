@@ -64,52 +64,6 @@ $session->unset('some-key');
 $session->set('some-key', $value);
 ```
 
-### Segments and CSRF
-
-You may also use session _segments_. These are _namespaced_ containers of
-session data, and they also provide the ability to generate and validate CSRF
-tokens.
-
-> ### Deprecated
->
-> The CSRF functionality below will be removed in an upcoming commit; see the
-> [TODO](TODO.md) for details. Segments may still be around, but would only
-> contain data access.
-
-To create or access a segment:
-
-```php
-$formData = $session->segment('form');
-```
-
-The primary data access API for segments is the same as for sessions.
-
-CSRF tokens are useful for preventing CSRF attacks.  To generate a CSRF token:
-
-```php
-$csrf = $formData->generateCsrfToken();
-```
-
-To validate a token submitted to you:
-
-```php
-if (! $formData->validateCsrfToken($submittedToken)) {
-    // ERROR!
-}
-```
-
-By default, these use the key `__csrf`; you may specify a different key by
-passing a key to either method:
-
-```php
-$csrf = $formData->generateCsrfToken('CSRF');
-
-// next request:
-if (! $formData->validateCsrfToken($submittedToken, 'CSRF')) {
-    // ERROR!
-}
-```
-
 ### Flash Messages
 
 This package provides facilities for creating, accessing, and manipulating flash
@@ -179,6 +133,72 @@ If you decide you want to keep flash messages for an additional hop:
 ```php
 $flashMessages->prolongFlash();
 ```
+
+### CSRF
+
+CSRF tokens are useful for preventing CSRF attacks. This package provides an
+interface for generating and validating tokens, an interface for producing these
+instances based on the current request, and middleware that will invoke the
+factory to create and inject a CSRF guard into your request.
+
+> ### Deprecated
+>
+> This functionality will soon be extracted to its own package and removed from
+> this one.
+
+Typically, you can do the following:
+
+```php
+$app->pipe(\Zend\Expressive\Session\SessionMiddleware::class);
+$app->pipe(\Zend\Expressive\Session\Flash\FlashMessageMiddleware::class);
+$app->pipe(\Zend\Expressive\Session\Csrf\CsrfMiddleware::class);
+```
+
+Alternately, do this with routed middlewar:
+
+```php
+$app->post('/contact/process', [
+    \Zend\Expressive\Session\SessionMiddleware::class,
+    \Zend\Expressive\Session\Flash\FlashMessageMiddleware::class,
+    \Zend\Expressive\Session\Csrf\CsrfMiddleware::class,
+    ProcessContactHandler::class,
+]);
+```
+
+Once you have done this, you can pull the CSRF guard from the request:
+
+```php
+$guard = $request->getAttribute(CsrfMiddleware::CSRF_ATTRIBUTE);
+```
+
+To generate a token:
+
+```php
+$csrf = $guard->generateToken();
+```
+
+To validate a token submitted to you:
+
+```php
+if (! $guard->validateToken($submittedToken)) {
+    // ERROR!
+}
+```
+
+By default, these use the key `__csrf`; you may specify a different key by
+passing a key to either method:
+
+```php
+$csrf = $guard->generateToken('CSRF');
+
+// next request:
+if (! $guard->validateToken($submittedToken, 'CSRF')) {
+    // ERROR!
+}
+```
+
+We also ship a pure-session-based variant; we recommend the flash message based
+one, however, to ensure the token expires in a timely fashion.
 
 ### Custom persistence
 

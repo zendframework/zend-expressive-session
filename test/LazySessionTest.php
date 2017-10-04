@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Session\LazySession;
-use Zend\Expressive\Session\SegmentInterface;
 use Zend\Expressive\Session\SessionInterface;
 use Zend\Expressive\Session\SessionPersistenceInterface;
 
@@ -70,17 +69,6 @@ class LazySessionTest extends TestCase
         $this->assertProxyCreated($this->persistence, $this->request);
         $this->proxy->isRegenerated()->willReturn(false);
         $this->assertFalse($this->session->isRegenerated());
-    }
-
-    public function testSegmentProxiesToUnderlyingSession()
-    {
-        $this->assertProxyCreated($this->persistence, $this->request);
-
-        $segment = $this->prophesize(SegmentInterface::class)->reveal();
-        $this->proxy->segment('foo')->willReturn($segment);
-
-        $test = $this->session->segment('foo');
-        $this->assertSame($segment, $test);
     }
 
     public function testToArrayProxiesToUnderlyingSession()

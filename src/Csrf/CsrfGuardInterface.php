@@ -5,18 +5,10 @@
  * @license   https://github.com/zendframework/zend-expressive-session/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Expressive\Session;
+namespace Zend\Expressive\Session\Csrf;
 
-interface SegmentInterface extends SessionDataInterface
+interface CsrfGuardInterface
 {
-    /**
-     * Retrieve the segment name.
-     *
-     * This is generally the key within the session under which the
-     * segment exists. It should never change.
-     */
-    public function getName() : string;
-
     /**
      * Generate a CSRF token.
      *
@@ -24,17 +16,15 @@ interface SegmentInterface extends SessionDataInterface
      * store it within the session, and return it so that developers may
      * then inject it in a form, a response header, etc.
      *
-     * CSRF tokens should EXPIRE after the first hop. As such, this should
-     * delegate to a flash value.
+     * CSRF tokens should EXPIRE after the first hop.
      */
-    public function generateCsrfToken(string $keyName = '__csrf') : string;
+    public function generateToken(string $keyName = '__csrf') : string;
 
     /**
      * Validate whether a submitted CSRF token is the same as the one stored in
      * the session.
      *
-     * CSRF tokens should EXPIRE after the first hop. As such, this should
-     * delegate to a flash value.
+     * CSRF tokens should EXPIRE after the first hop.
      */
-    public function validateCsrfToken(string $token, string $csrfKey = '__csrf') : bool;
+    public function validateToken(string $token, string $csrfKey = '__csrf') : bool;
 }
