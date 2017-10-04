@@ -28,11 +28,6 @@ class Session implements SessionInterface
      */
     private $originalData;
 
-    /**
-     * @var SegmentInterface[]
-     */
-    private $segments = [];
-
     public function __construct(array $data)
     {
         $this->data = $this->originalData = $data;
@@ -53,21 +48,11 @@ class Session implements SessionInterface
     }
 
     /**
-     * Retrieve all data, including segments, as a nested set of arrays, for
-     * purposes of persistence.
+     * Retrieve all data for purposes of persistence.
      */
     public function toArray() : array
     {
-        $data = $this->data;
-        foreach ($this->segments as $key => $segment) {
-            $segmentData = $segment->toArray();
-            if (empty($segmentData)) {
-                unset($this->data[$key]);
-                continue;
-            }
-            $data[$key] = $segmentData;
-        }
-        return $data;
+        return $this->data;
     }
 
     /**
@@ -77,7 +62,6 @@ class Session implements SessionInterface
      */
     public function get(string $name, $default = null)
     {
-        $this->assertNotSegment($name, 'whenRetrieving');
         return $this->data[$name] ?? $default;
     }
 
@@ -92,7 +76,6 @@ class Session implements SessionInterface
      */
     public function set(string $name, $value) : void
     {
-        $this->assertNotSegment($name, 'whenSetting');
         $this->data[$name] = self::extractSerializableValue($value);
     }
 
@@ -101,28 +84,7 @@ class Session implements SessionInterface
      */
     public function unset(string $name) : void
     {
-        $this->assertNotSegment($name, 'whenDeleting');
         unset($this->data[$name]);
-    }
-
-    /**
-     * @throws Exception\InvalidSessionSegmentDataException when data exists for the
-     *     segment, but it is not an array.
-     */
-    public function segment(string $name) : SegmentInterface
-    {
-        if (isset($this->segments[$name])) {
-            return $this->segments[$name];
-        }
-
-        if (array_key_exists($name, $this->data)
-            && ! is_array($this->data[$name])
-        ) {
-            throw Exception\InvalidSessionSegmentDataException::whenRetrieving($data, $this->data[$name]);
-        }
-
-        $this->segments[$name] = new Segment($this->data[$name]);
-        return $this->segments[$name];
     }
 
     public function hasChanged() : bool
@@ -131,16 +93,7 @@ class Session implements SessionInterface
             return true;
         }
 
-        if ($this->data !== $this->originalData) {
-            return true;
-        }
-
-        return array_reduce($this->segments, function (bool $hasChanged, Segment $segment) {
-            if ($hasChanged) {
-                return $hasChanged;
-            }
-            return $segment->hasChanged();
-        }, false);
+        return $this->data !== $this->originalData;
     }
 
     public function regenerate() : SessionInterface
@@ -153,19 +106,5 @@ class Session implements SessionInterface
     public function isRegenerated() : bool
     {
         return $this->isRegenerated;
-    }
-
-    /**
-     * Assert that a value by $name is not a segment.
-     *
-     * @throws Exception\SessionSegmentConflictException if a segment by $name is found.
-     */
-    private function assertNotSegment(string $name, string $event)
-    {
-        if (! isset($this->segments[$name])) {
-            return;
-        }
-        $factory = [Exception\SessionSegmentConflictException::class, $event];
-        throw $factory($name);
     }
 }
