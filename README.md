@@ -53,12 +53,12 @@ $app->post('/contact/process', [
 
 Once the middleware is in place, you can access the session container from your
 other middleware via the request attribute
-`Zend\Expressive\Session\SessionInterface`:
+`Zend\Expressive\Session\SessionMiddleare::SESSION_ATTRIBUTE`:
 
 ```php
-use Zend\Expressive\Session\SessionInterface;
+use Zend\Expressive\Session\SessionMiddleware;
 
-$session = $request->getAttribute(SessionInterface::class);
+$session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
 $session->get('some-key');
 $session->unset('some-key');
 $session->set('some-key', $value);
@@ -72,6 +72,16 @@ data:
 
 - Ability to create and access flash messages, with configurable hops.
 - Ability to generate and validate CSRF tokens.
+
+> ### Deprecated
+>
+> Most functionality listed below will be removed from this package in an
+> upcoming commit; see the [TODO](TODO.md) for details. Segments may still be
+> around, but would only contain data access, not flash messages or CSRF
+> tooling.
+>
+> Flash messages and CSRF tooling will be provided by separate packages built on
+> top of this one.
 
 To create or access a segment:
 
@@ -144,28 +154,10 @@ use Psr\Http\Message\ServerRequestInterface;
 interface SessionPersistenceInterface
 {
     /**
-     * Named constructor for building an instance.
+     * Initialize the session data instance associated with the persistence
+     * engine based on the current request.
      */
-    public static function createFromRequest(ServerRequestInterface $request) : SessionPersistenceInterface;
-
-    /**
-     * Allows building a new instance based on the request provided.
-     *
-     * Use this method if the session needs some sort of backing -- redis,
-     * memcached, etc. -- that requires injection in the constructor, but
-     * the session identifier may vary based on request data (e.g., a cookie
-     * value).
-     *
-     * This method DOES NOT require that a new instance is returned, though
-     * it is suggested.
-     */
-    public function createNewInstanceFromRequest(ServerRequestInterface $request) : SessionPersistenceInterface;
-
-    /**
-     * Generate the session data instance associated with the persistence
-     * engine.
-     */
-    public function createSession() : SessionInterface;
+    public function initializeSessionFromRequest(ServerRequestInterface $request) : SessionInterface;
 
     /**
      * Persist the session data instance.
@@ -209,4 +201,3 @@ return [
     ],
 ];
 ```
-
