@@ -28,10 +28,10 @@ different request attributes, though, which might become confusing in large
 applications — though likely no more confusing than learning which session
 "segments" are used in which contexts of the application.
 
-- [ ] Create a separate package for flash messages
-- [ ] Introduce an interface just for flash message access and manipulation.
-  - [ ] Rename `persistFlash()` to something more appropriate.
-- [ ] Create middleware for creating the `Flash` instance and propagating it
+- [x] Create a separate package for flash messages
+- [x] Introduce an interface just for flash message access and manipulation.
+  - [x] Rename `persistFlash()` to something more appropriate.
+- [x] Create middleware for creating the `Flash` instance and propagating it
   into the request delegated by the middleware.
 
 ### CSRF protection

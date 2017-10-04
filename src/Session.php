@@ -7,16 +7,6 @@
 
 namespace Zend\Expressive\Session;
 
-/**
- * Notes on lazy session:
- *
- * - implement it pretty much exactly like it is in storageless, but using
- *   our interface. Use a static method as constructor, to ensure it cannot be
- *   overridden.
- * - update the session middleware to create a lazy session, using a callback
- *   that starts the session. When middleware operations are complete, it should
- *   persist the session.
- */
 class Session implements SessionInterface
 {
     use SessionCommonTrait;
@@ -48,7 +38,6 @@ class Session implements SessionInterface
     public function __construct(array $data)
     {
         $this->data = $this->originalData = $data;
-        $this->prepareFlashMessages();
     }
 
     /**
@@ -152,54 +141,6 @@ class Session implements SessionInterface
     public function isRegenerated() : bool
     {
         return $this->isRegenerated;
-    }
-
-    /**
-     * Prepares flash messages for this request.
-     *
-     * Loops through all data, identifying nested arrays that have the
-     * Segment::FLASH_NEXT key, passing those values to
-     * prepareFlashMessagesForSegment(), and re-assigning the value returned
-     * from that method to the data for that segment.
-     */
-    private function prepareFlashMessages() : void
-    {
-        foreach ($this->data as $key => $value) {
-            if (! is_array($value)
-                || ! isset($value[Segment::FLASH_NEXT])
-            ) {
-                continue;
-            }
-
-            $this->data[$key] = $this->prepareFlashMessagesForSegment($key, $value);
-        }
-    }
-
-    /**
-     * Prepares flash messages for a given segment.
-     *
-     * Resets the Segment::FLASH_NOW value to an empty array, and loops through
-     * the Segment::FLASH_NEXT values, adding them to Segment::FLASH_NOW.
-     *
-     * If the value contains a `hops` value greater than 1, it reassigns its
-     * value in Segment::FLASH_NEXT, after first decrementing the value.
-     * Otherwise, it unsets the entry in Segment::FLASH_NEXT.
-     */
-    private function prepareFlashMessagesForSegment(string $key, array $segmentData) : array
-    {
-        $segmentData[Segment::FLASH_NOW] = [];
-        foreach ($segmentData[Segment::FLASH_NEXT] as $key => $data) {
-            $segmentData[Segment::FLASH_NOW][$key] = $data['value'];
-
-            if ($data['hops'] === 1) {
-                unset($segmentData[Segment::FLASH_NEXT][$key]);
-                continue;
-            }
-
-            $data['hops'] -= 1;
-            $segmentData[Segment::FLASH_NEXT][$key] = $data;
-        }
-        return $segmentData;
     }
 
     /**

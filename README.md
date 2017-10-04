@@ -64,24 +64,17 @@ $session->unset('some-key');
 $session->set('some-key', $value);
 ```
 
-### Segments, flash, and CSRF
+### Segments and CSRF
 
 You may also use session _segments_. These are _namespaced_ containers of
-session data, and they provide a few additional features besides basic session
-data:
-
-- Ability to create and access flash messages, with configurable hops.
-- Ability to generate and validate CSRF tokens.
+session data, and they also provide the ability to generate and validate CSRF
+tokens.
 
 > ### Deprecated
 >
-> Most functionality listed below will be removed from this package in an
-> upcoming commit; see the [TODO](TODO.md) for details. Segments may still be
-> around, but would only contain data access, not flash messages or CSRF
-> tooling.
->
-> Flash messages and CSRF tooling will be provided by separate packages built on
-> top of this one.
+> The CSRF functionality below will be removed in an upcoming commit; see the
+> [TODO](TODO.md) for details. Segments may still be around, but would only
+> contain data access.
 
 To create or access a segment:
 
@@ -89,30 +82,7 @@ To create or access a segment:
 $formData = $session->segment('form');
 ```
 
-To create a flash message available on the next request:
-
-```php
-$formData->flash('errors', $errors);
-```
-
-To allow access to a flash message over 3 requests:
-
-```php
-$formData->flash('errors', $errors, 3);
-```
-
-Flash messages are only accessible on the _next_ request; to allow access to
-them in the _current_ request, use `flashNow()`, which has the same signature:
-
-```php
-$formData->flashNow('errors', $errors);
-```
-
-If you decide you want to keep flash messages for an additional hop:
-
-```php
-$formData->persistFlash();
-```
+The primary data access API for segments is the same as for sessions.
 
 CSRF tokens are useful for preventing CSRF attacks.  To generate a CSRF token:
 
@@ -138,6 +108,76 @@ $csrf = $formData->generateCsrfToken('CSRF');
 if (! $formData->validateCsrfToken($submittedToken, 'CSRF')) {
     // ERROR!
 }
+```
+
+### Flash Messages
+
+This package provides facilities for creating, accessing, and manipulating flash
+messages.
+
+> ### Deprecated
+>
+> The `Zend\Expressive\Session\Flash` namespace will be extracted to a
+> separate package that depends on this one in the future.
+
+These facilities are provided via two mechanisms:
+
+- `FlashMessagesInterface` and its implementation `FlashMessages`; these accept
+  a `Zend\Expressive\Session\SessionInterface` instance, and a key that
+  represents the location of flash message data within the session.
+- `FlashMessageMiddleware`, which accepts the name of a `FlashMessagesInterface`
+  implementation, a session key to use for flash messages, and a request
+  attribute under which to store the `FlashMessagesInterface` instance.
+
+Generally speaking, just pipe the middleware to your application:
+
+```php
+$app->pipe(\Zend\Expressive\Session\SessionMiddleware::class);
+$app->pipe(\Zend\Expressive\Session\Flash\FlashMessageMiddleware::class);
+```
+
+Or, with routed middleware:
+
+```php
+$app->post('/contact/process', [
+    \Zend\Expressive\Session\SessionMiddleware::class,
+    \Zend\Expressive\Session\Flash\FlashMessageMiddleware::class,
+    ProcessContactHandler::class,
+]);
+```
+
+Within your middleware, access flash messages via the configured attribute; by
+default this is
+`Zend\Expressive\Session\Flash\FlashMessageMiddleware::FLASH_ATTRIBUTE`, or more
+simply "flash":
+
+```php
+$flashMessages = $request->getAttribute('flash');
+```
+
+To create a flash message available on the next request:
+
+```php
+$flashMessages->flash('errors', $errors);
+```
+
+To allow access to a flash message over 3 requests:
+
+```php
+$flashMessages->flash('errors', $errors, 3);
+```
+
+Flash messages are only accessible on the _next_ request; to allow access to
+them in the _current_ request, use `flashNow()`, which has the same signature:
+
+```php
+$flashMessages->flashNow('errors', $errors);
+```
+
+If you decide you want to keep flash messages for an additional hop:
+
+```php
+$flashMessages->prolongFlash();
 ```
 
 ### Custom persistence

@@ -18,53 +18,6 @@ interface SegmentInterface extends SessionDataInterface
     public function getName() : string;
 
     /**
-     * Set a flash value with the given key.
-     *
-     * Flash values are accessible on the next "hop", where a hop is the
-     * next time the session is accessed; you may pass an additional $hops
-     * integer to allow access for more than one hop.
-     *
-     * @param mixed $value
-     */
-    public function flash(string $key, $value, int $hops = 1) : void;
-
-    /**
-     * Set a flash value with the given key, but allow access during this request.
-     *
-     * Flash values are generally accessible only on subsequent requests;
-     * using this method, you may make the value available during the current
-     * request as well.
-     *
-     * @param mixed $value
-     */
-    public function flashNow(string $key, $value, int $hops = 1) : void;
-
-    /**
-     * Retrieve a flash value.
-     *
-     * Will return a value only if a flash value was set in a previous request,
-     * or if `flashNow()` was called in this request with the same `$key`.
-     *
-     * WILL NOT return a value if set in the current request via `flash()`.
-     *
-     * @param mixed $default Default value to return if no flash value exists.
-     * @return mixed
-     */
-    public function getFlash(string $key, $default = null);
-
-    /**
-     * Clear all flash values.
-     *
-     * Affects the next and subsequent requests.
-     */
-    public function clearFlash() : void;
-
-    /**
-     * Persists any current flash messages for one more hop.
-     */
-    public function persistFlash() : void;
-
-    /**
      * Generate a CSRF token.
      *
      * Typically, implementations should generate a one-time CSRF token,

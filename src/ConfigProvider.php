@@ -19,6 +19,9 @@ class ConfigProvider
     public function getDependencies() : array
     {
         return [
+            'invokables' => [
+                Flash\FlashMessageMiddleware::class => Flash\FlashMessageMiddleware::class,
+            ],
             'factories' => [
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
             ],
