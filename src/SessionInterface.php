@@ -10,19 +10,23 @@ namespace Zend\Expressive\Session;
 interface SessionInterface extends SessionDataInterface
 {
     /**
-     * Retrieve the session identifier.
+     * Regenerate the session.
      *
-     * This is generally used to provide an identifier via cookie, query string
-     * argument, etc.
+     * This can be done to prevent session fixation. When executed, it SHOULD
+     * return a new instance; that instance should always return true for
+     * isRegenerated().
+     *
+     * An example of where this WOULD NOT return a new instance is within the
+     * shipped LazySession, where instead it would return itself, after
+     * internally re-setting the proxied session.
      */
-    public function getId() : string;
+    public function regenerate(): SessionInterface;
 
     /**
-     * Regenerate the session identifier.
-     *
-     * This can be done to prevent session fixation.
+     * Method to determine if the session was regenerated; should return
+     * true if the instance was produced via regenerate().
      */
-    public function regenerateId(): void;
+    public function isRegenerated() : bool;
 
     /**
      * Retrieve a namespaced segment from the session.

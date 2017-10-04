@@ -15,7 +15,7 @@ interface SegmentInterface extends SessionDataInterface
      * This is generally the key within the session under which the
      * segment exists. It should never change.
      */
-    public function getId() : string;
+    public function getName() : string;
 
     /**
      * Set a flash value with the given key.

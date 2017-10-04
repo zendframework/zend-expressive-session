@@ -29,9 +29,9 @@ class Session implements SessionInterface
     private $data;
 
     /**
-     * @var string
+     * @var bool
      */
-    private $id;
+    private $isRegenerated;
 
     /**
      * Original data provided to the constructor.
@@ -41,22 +41,13 @@ class Session implements SessionInterface
     private $originalData;
 
     /**
-     * Original ID provided to the constructor.
-     *
-     * @var string
-     */
-    private $originalId;
-
-    /**
      * @var SegmentInterface[]
      */
     private $segments = [];
 
-    public function __construct(string $id, array $data)
+    public function __construct(array $data)
     {
-        $this->id  = $this->originalId = $id;
         $this->data = $this->originalData = $data;
-
         $this->prepareFlashMessages();
     }
 
@@ -87,6 +78,11 @@ class Session implements SessionInterface
     {
         $this->assertNotSegment($name, 'whenRetrieving');
         return $this->data[$name] ?? $default;
+    }
+
+    public function has(string $name) : bool
+    {
+        return array_key_exist($name, $this->data);
     }
 
     /**
@@ -130,7 +126,7 @@ class Session implements SessionInterface
 
     public function hasChanged() : bool
     {
-        if ($this->id !== $this->originalId) {
+        if ($this->isRegenerated) {
             return true;
         }
 
@@ -146,9 +142,16 @@ class Session implements SessionInterface
         }, false);
     }
 
-    public function regenerateId(): void
+    public function regenerate() : SessionInterface
     {
-        $this->id = static::generateToken();
+        $session = clone $this;
+        $session->isRegenerated = true;
+        return $session;
+    }
+
+    public function isRegenerated() : bool
+    {
+        return $this->isRegenerated;
     }
 
     /**

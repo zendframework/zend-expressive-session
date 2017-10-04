@@ -7,45 +7,25 @@
 
 namespace Zend\Expressive\Session;
 
+use Dflydev\FigCookies\FigRequestCookies;
+use Dflydev\FigCookies\FigResponseCookies;
+use Dflydev\FigCookies\SetCookie;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PhpSessionPersistence implements SessionPersistenceInterface
 {
-    /**
-     * @var string
-     */
-    private $id;
-
-    private function __construct(string $id)
+    public function initializeSessionFromRequest(ServerRequestInterface $request) : SessionInterface
     {
-        $this->id = $id;
-    }
-
-    public static function createFromRequest(ServerRequestInterface $request) : SessionPersistenceInterface
-    {
-        return new self(self::getSessionId($request));
-    }
-
-    public function createNewInstanceFromRequest(ServerRequestInterface $request) : SessionPersistenceInterface
-    {
-        $clone = clone $this;
-        $clone->id = self::getSessionId($request);
-        return $clone;
-    }
-
-    public function createSession() : SessionInterface
-    {
-        $this->startSession($this->id);
-        return new Session($this->id, $_SESSION);
+        $id = FigRequestCookies::get($request, session_name()) ?: $this->generateSessionId();
+        $this->startSession($id);
+        return new Session($id, $_SESSION);
     }
 
     public function persistSession(SessionInterface $session, ResponseInterface $response) : ResponseInterface
     {
-        $sessionId = $session->getId();
-        if ($this->id !== $sessionId) {
-            $this->id = $sessionId;
-            $this->startSession($sessionId);
+        if ($session->isRegenerated()) {
+            $this->startSession($this->generateSessionId());
         }
 
         $_SESSION = $session->toArray();
@@ -55,21 +35,11 @@ class PhpSessionPersistence implements SessionPersistenceInterface
             return $response;
         }
 
-        return $response->withHeader(
-            'Set-Cookie',
-            sprintf(
-                '%s=%s; path=%s',
-                session_name(),
-                $sessionId,
-                ini_get('session.cookie_path')
-            )
-        );
-    }
+        $sessionCookie = SetCookie::create(session_name())
+            ->withValue(session_id())
+            ->withPath(ini_get('session.cookie_path'));
 
-    private static function getSessionId(ServerRequestInterface $request) : string
-    {
-        $cookies = $request->getCookieParams();
-        return $cookies[session_name()] ?? Session::generateToken();
+        return FigResponseCookies::set($response, $sessionCookie);
     }
 
     private function startSession(string $id) : void
@@ -79,5 +49,13 @@ class PhpSessionPersistence implements SessionPersistenceInterface
             'use_cookies'      => false,
             'use_only_cookies' => true,
         ]);
+    }
+
+    /**
+     * Generate a session identifier.
+     */
+    private function generateSessionId() : string
+    {
+        return bin2hex(random_bytes(16));
     }
 }

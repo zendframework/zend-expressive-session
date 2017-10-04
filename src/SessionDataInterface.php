@@ -27,6 +27,11 @@ interface SessionDataInterface
     public function get(string $name, $default = null);
 
     /**
+     * Whether or not the container has the given key.
+     */
+    public function has(string $name) : bool;
+
+    /**
      * Set a value within the session.
      *
      * Values MUST be serializable in any format; we recommend ensuring the

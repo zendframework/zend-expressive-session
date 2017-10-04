@@ -44,7 +44,7 @@ class Segment implements SegmentInterface
     /**
      * @var string
      */
-    private $id;
+    private $name;
 
     /**
      * Original data provided to the constructor.
@@ -53,11 +53,16 @@ class Segment implements SegmentInterface
      */
     private $originalData;
 
-    public function __construct(string $id, array $data)
+    public function __construct(string $name, array $data)
     {
-        $this->id = $id;
+        $this->name = $name;
         $data = $this->prepareSegmentData($data);
         $this->data = $this->originalData = $data;
+    }
+
+    public function getName() : string
+    {
+        return $this->name;
     }
 
     /**
@@ -85,6 +90,11 @@ class Segment implements SegmentInterface
     public function get(string $name, $default = null)
     {
         return $this->data[$name] ?? $default;
+    }
+
+    public function has(string $name) : bool
+    {
+        return array_key_exists($name, $this->data);
     }
 
     public function set(string $name, $value): void
@@ -192,7 +202,7 @@ class Segment implements SegmentInterface
      */
     public function generateCsrfToken(string $keyName = '__csrf') : string
     {
-        $token = static::generateToken();
+        $token = $this->generateToken();
         $this->flashNow($keyName, $token);
         return $token;
     }
@@ -221,5 +231,13 @@ class Segment implements SegmentInterface
         }
 
         return $data;
+    }
+
+    /**
+     * Generate a CSRF token value.
+     */
+    private function generateToken() : string
+    {
+        return bin2hex(random_bytes(16));
     }
 }

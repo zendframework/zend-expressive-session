@@ -7,6 +7,8 @@
 
 namespace Zend\Expressive\Session;
 
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Proxy to an underlying SessionInterface implementation.
  *
@@ -27,19 +29,28 @@ final class LazySession implements SessionInterface
      */
     private $proxiedSession;
 
-    private function __construct(SessionPersistenceInterface $persistence)
+    /**
+     * Request instance to use when calling $persistence->initializeSessionFromRequest()
+     *
+     * @var ServerRequestInterface
+     */
+    private $request;
+
+    public function __construct(SessionPersistenceInterface $persistence, ServerRequestInterface $request)
     {
         $this->persistence = $persistence;
+        $this->request = $request;
     }
 
-    public function getId() : string
+    public function regenerate() : SessionInterface
     {
-        return $this->getProxiedSession()->getId();
+        $this->proxiedSession = $this->getProxiedSession()->regenerate();
+        return $this;
     }
 
-    public function regenerateId(): void
+    public function isRegenerated() : bool
     {
-        $this->getProxiedSession()->regenerateId();
+        return $this->getProxiedSession()->isRegenerated();
     }
 
     public function segment(string $name) : SegmentInterface
@@ -55,6 +66,11 @@ final class LazySession implements SessionInterface
     public function get(string $name, $default = null)
     {
         return $this->getProxiedSession()->get($name, $default);
+    }
+
+    public function has(string $name) : bool
+    {
+        return $this->getProxiedSession()->has($name);
     }
 
     public function set(string $name, $value) : void
@@ -78,7 +94,13 @@ final class LazySession implements SessionInterface
             return false;
         }
 
-        return $this->getProxiedSession()->hasChanged();
+        $proxy = $this->getProxiedSession();
+
+        if ($proxy->isRegenerated()) {
+            return true;
+        }
+
+        return $proxy->hasChanged();
     }
 
     private function getProxiedSession() : SessionInterface
@@ -87,7 +109,7 @@ final class LazySession implements SessionInterface
             return $this->proxiedSession;
         }
 
-        $this->proxiedSession = $this->persistence->createSession();
+        $this->proxiedSession = $this->persistence->initializeSessionFromRequest($this->request);
         return $this->proxiedSession;
     }
 }
