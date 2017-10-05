@@ -19,7 +19,7 @@ class Session implements SessionInterface
     /**
      * @var bool
      */
-    private $isRegenerated;
+    private $isRegenerated = false;
 
     /**
      * Original data provided to the constructor.
@@ -67,7 +67,7 @@ class Session implements SessionInterface
 
     public function has(string $name) : bool
     {
-        return array_key_exist($name, $this->data);
+        return array_key_exists($name, $this->data);
     }
 
     /**
@@ -85,6 +85,11 @@ class Session implements SessionInterface
     public function unset(string $name) : void
     {
         unset($this->data[$name]);
+    }
+
+    public function clear() : void
+    {
+        $this->data = [];
     }
 
     public function hasChanged() : bool
