@@ -41,6 +41,7 @@ class CsrfMiddleware implements MiddlewareInterface
         string $attributeKey = self::GUARD_ATTRIBUTE
     ) {
         $this->guardFactory = $guardFactory;
+        $this->attributeKey = $attributeKey;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
