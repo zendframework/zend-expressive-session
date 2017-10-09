@@ -33,7 +33,7 @@ class FlashMessages implements FlashMessagesInterface
     /**
      * @var array
      */
-    private $currentMessages;
+    private $currentMessages = [];
 
     /**
      * @var SessionInterface
