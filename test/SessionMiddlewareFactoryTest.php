@@ -9,20 +9,24 @@ namespace ZendTest\Expressive\Session;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Session\PhpSessionPersistence;
 use Zend\Expressive\Session\SessionMiddleware;
 use Zend\Expressive\Session\SessionMiddlewareFactory;
+use Zend\Expressive\Session\SessionPersistenceInterface;
 
 class SessionMiddlewareFactoryTest extends TestCase
 {
-    public function testFactoryProducesMiddlewareWithPhpSessionPersistence()
+    public function testFactoryProducesMiddlewareWithSessionPersistenceInterfaceService()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
+        $persistence = $this->prophesize(SessionPersistenceInterface::class)->reveal();
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->get(SessionPersistenceInterface::class)->willReturn($persistence);
+
         $factory = new SessionMiddlewareFactory();
 
-        $middleware = $factory($container);
+        $middleware = $factory($container->reveal());
 
         $this->assertInstanceOf(SessionMiddleware::class, $middleware);
-        $this->assertAttributeInstanceOf(PhpSessionPersistence::class, 'persistence', $middleware);
+        $this->assertAttributeSame($persistence, 'persistence', $middleware);
     }
 }
