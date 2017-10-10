@@ -53,7 +53,7 @@ applications — though likely no more confusing than learning which session
   - [x] Rename `persistFlash()` to something more appropriate.
 - [x] Create middleware for creating the `Flash` instance and propagating it
   into the request delegated by the middleware.
-- [ ] Externalize the flash message support to its own package
+- [x] Externalize the flash message support to its own package
 
 ### CSRF protection
 
@@ -70,4 +70,4 @@ to our own package, or even write our own package, for handling CSRF.
 - [x] Extract an interface for generating, validating CSRF values
 - [x] Create one or more implementations of the interface
 - [x] Create middleware for generating and injecting the CSRF guard into the request
-- [ ] Externalize the CSRF support to its own package
+- [x] Externalize the CSRF support to its own package
