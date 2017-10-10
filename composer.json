@@ -30,6 +30,9 @@
         "phpunit/phpunit": "^6.0.9",
         "zendframework/zend-coding-standard": "~1.0.0"
     },
+    "conflict": {
+        "phpspec/prophecy": "<1.7.2"
+    },
     "suggest": {
         "zendframework/zend-expressive-csrf": "^1.0 || ^1.0-dev for CSRF protection capabilities",
         "zendframework/zend-expressive-flash": "^1.0 || ^1.0-dev for flash message capabilities",
