@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sessions and session middleware for PSR-7 applications.">  
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    <title>Session Containers - zend-expressive-session</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/styles-482aa2add1.css">
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+                <a class="logo-link" href="https://framework.zend.com/" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
+                <a href="..">zend-expressive-session</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../intro/">Introduction</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Usage <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li class="active">
+    <a href="./">Session Containers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../persistence/">Session Persistence</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../middleware/">Session Middleware</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" class="component-toggle" data-toggle="tooltip" data-placement="bottom" title="Show component list">
+                        <i class="fa fa-book"></i> Components
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-expressive-session">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div id="page-top" class="container docs">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#session-containers">Session Containers</a></li>
+        
+            <li><a href="#usage">Usage</a></li>
+        
+            <li><a href="#lazy-sessions">Lazy Sessions</a></li>
+        
+            <li><a href="#session-regeneration">Session Regeneration</a></li>
+        
+    
+    </ul>
+
+    
+    <ul class="pager hidden-print">
+      <li class="previous">
+        <a rel="prev" href="../intro/"><i class="fa fa-arrow-left"></i> Previous</a>
+      </li>
+      <li class="next">
+        <a rel="next" href="../persistence/">Next <i class="fa fa-arrow-right"></i></a>
+      </li>
+    </ul>
+    
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="..">zend-expressive-session</a></li>
+  
+    
+      
+        <li>Usage</li>
+      
+    
+  
+  <li class="active">Session Containers</li>
+</ol>
+
+<h1 id="session-containers">Session Containers</h1>
+<p>Session containers are the primary interface with which most application
+developers will work; they contain the data currently in the session, and allow
+you to push data to the session.</p>
+<p>All session containers implement <code>Zend\Expressive\Session\SessionInterface</code>:</p>
+<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Session;
+
+interface SessionInterface
+{
+    /**
+     * Serialize the session data to an array for storage purposes.
+     */
+    public function toArray() : array;
+
+    /**
+     * Retrieve a value from the session.
+     *
+     * @param mixed $default Default value to return if $name does not exist.
+     * @return mixed
+     */
+    public function get(string $name, $default = null);
+
+    /**
+     * Whether or not the container has the given key.
+     */
+    public function has(string $name) : bool;
+
+    /**
+     * Set a value within the session.
+     *
+     * Values MUST be serializable in any format; we recommend ensuring the
+     * values are JSON serializable for greatest portability.
+     *
+     * @param mixed $value
+     */
+    public function set(string $name, $value) : void;
+
+    /**
+     * Remove a value from the session.
+     */
+    public function unset(string $name) : void;
+
+    /**
+     * Clear all values.
+     */
+    public function clear() : void;
+
+    /**
+     * Does the session contain changes? If not, the middleware handling
+     * session persistence may not need to do more work.
+     */
+    public function hasChanged() : bool;
+
+    /**
+     * Regenerate the session.
+     *
+     * This can be done to prevent session fixation. When executed, it SHOULD
+     * return a new instance; that instance should always return true for
+     * isRegenerated().
+     *
+     * An example of where this WOULD NOT return a new instance is within the
+     * shipped LazySession, where instead it would return itself, after
+     * internally re-setting the proxied session.
+     */
+    public function regenerate(): SessionInterface;
+
+    /**
+     * Method to determine if the session was regenerated; should return
+     * true if the instance was produced via regenerate().
+     */
+    public function isRegenerated() : bool;
+}</code></pre>
+
+
+<p>The default implementation, and the one you'll most likely interact with, is
+<code>Zend\Expressive\Session\Session</code>.</p>
+<h2 id="usage">Usage</h2>
+<p>Session containers will typically be passed to your middleware using the
+<a href="../middleware/">SessionMiddleware</a>, via the
+<code>Zend\Expressive\Session\SessionMiddleware::SESSION_ATTRIBUTE</code> ("session")
+request attribute.</p>
+<p>Once you have the container, you can check for data:</p>
+<pre class="codehilite"><code class="language-php">if ($session-&gt;has('user')) {
+}</code></pre>
+
+
+<p>and retrieve it:</p>
+<pre class="codehilite"><code class="language-php">$user = $session-&gt;get('user');</code></pre>
+
+
+<p>You can combine those operations, by passing a default value as a second
+argument to the <code>get()</code> method:</p>
+<pre class="codehilite"><code class="language-php">$user = $session-&gt;get('user', new GuestUser());</code></pre>
+
+
+<p>If a datum is no longer relevant in the session, <code>unset()</code> it:</p>
+<pre class="codehilite"><code class="language-php">$session-&gt;unset('user');</code></pre>
+
+
+<p>If none of the data is relevant, <code>clear()</code> the session:</p>
+<pre class="codehilite"><code class="language-php">$session-&gt;clear();</code></pre>
+
+
+<h2 id="lazy-sessions">Lazy Sessions</h2>
+<p>This package provides another implementation of <code>SessionInterface</code> via
+<code>Zend\Expressive\Session\LazySession</code>. This implementation does the following:</p>
+<ul>
+<li>It composes a <a href="../persistence/">persistence</a> instance, along with the current
+  request.</li>
+<li>On <em>first access</em> (e.g., <code>get()</code>, <code>set()</code>, etc.), it uses the composed
+  persistence and request instances to generate the <em>actual</em> session container.
+  All methods then <em>proxy</em> to this container.</li>
+</ul>
+<p>This approach helps delay any I/O or network operations, and/or
+deserialization, until they are actually needed.</p>
+<p>The shipped <a href="../middleware/">SessionMiddleware</a> produces a <code>LazySession</code>.</p>
+<h2 id="session-regeneration">Session Regeneration</h2>
+<p>Some application events benefit from <em>session regeneration</em>. In particular,
+after a user has successfully logged in or out, you will generally want to
+regenerate the session in order to prevent session fixation and the attack
+vectors it invites.</p>
+<p>In those situations, call <code>regenerate()</code>:</p>
+<pre class="codehilite"><code class="language-php">$newSession = $session-&gt;regenerate();</code></pre>
+
+
+<p>The interface indicates that a new instance <em>should</em> be returned. However, in
+the default usage, you will have a <code>LazySession</code> instance (as described above),
+which <em>decorates</em> the underlying session storage. This is done for two reasons:</p>
+<ul>
+<li>First, the stated reasons of preventing the need to deserialize data and/or
+  perform I/O access until the last moment.</li>
+<li>Second, to ensure that the <code>SessionMiddleware</code> <em>always has a pointer to the
+  session</em>.</li>
+</ul>
+<p>This latter is what allows you to regenerate the session in middleware nested
+deep in your application, but still have the data persisted correctly.</p>
+
+<hr />
+
+
+<nav>
+  <ul class="pager hidden-print">
+    <li class="previous">
+      <a rel="prev" href="../intro/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../persistence/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+</div>
+        
+    </div>
+    <!-- content:end -->
+
+    <div id="footerwrap">
+    <div class="container">
+        <div class="row site-map">
+            <div class="col-lg-3">
+              <p>
+                <strong>Zend Framework</strong><br />
+                <a href="https://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://docs.zendframework.com">docs.zendframework.com</a><br />
+                <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
+                <a href="https://apigility.org">apigility.org</a><br />
+              </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 centered">
+                <a class="back-to-top" href="#page-top"><i class="fa fa-chevron-circle-up fa-4" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="spacing"></div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <h4>Copyright</h4>
+                <div class="hline-w"></div>
+
+                <p>&copy; 2006-2017 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+            </div>
+
+            <div class="col-lg-4">
+                <h4>Contacts</h4>
+                <div class="hline-w"></div>
+                <p>
+                    <a href="https://discourse.zendframework.com" class="btn-social btn-outline" alt="Forum" title="Forum"><i class="fa fa-comments"></i></a>
+                    <a href="https://zendframework-slack.herokuapp.com" class="btn-social btn-outline" alt="Slack" title="Slack"><i class="fa fa-slack"></i></a>
+                    <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
+                    <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <script>var base_url = '..';</script>
+    <script src="../js/scripts-019f7ac1f7.js"></script>
+    <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="zf-components">
+  <div class="zf-components-grid">
+    <div class="zf-logo">
+      <a href="https://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
+    </div>
+
+    <div class="component-list"></div>
+
+    <p class="zf-components-rollup"><a href="#">Hide list</a></p>
+  </div>
+</div>
+
+</body>
+
+</html>
