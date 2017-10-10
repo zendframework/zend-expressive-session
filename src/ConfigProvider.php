@@ -19,18 +19,8 @@ class ConfigProvider
     public function getDependencies() : array
     {
         return [
-            'aliases' => [
-                // Change this to the CsrfGuardFactoryInterface implementation you wish to use:
-                Csrf\CsrfGuardFactoryInterface::class => Csrf\FlashCsrfGuardFactory::class,
-            ],
-            'invokables' => [
-                Csrf\FlashCsrfGuardFactory::class   => Csrf\FlashCsrfGuardFactory::class,
-                Csrf\SessionCsrfGuardFactory::class => Csrf\SessionCsrfGuardFactory::class,
-                Flash\FlashMessageMiddleware::class => Flash\FlashMessageMiddleware::class,
-            ],
             'factories' => [
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
-                Csrf\CsrfMiddleware::class => Csr\CsrfMiddlewareFactory::class,
             ],
         ];
     }
