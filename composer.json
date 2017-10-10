@@ -1,10 +1,13 @@
 {
     "name": "zendframework/zend-expressive-session",
-    "description": "Description of project goes here",
+    "description": "Session container and middleware for PSR-7 applications",
     "type": "library",
     "license": "BSD-3-Clause",
     "keywords": [
         "expressive",
+        "middleware",
+        "psr-7",
+        "session",
         "zf",
         "zendframework"
     ],
