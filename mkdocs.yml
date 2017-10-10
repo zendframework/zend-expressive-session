@@ -3,7 +3,11 @@ site_dir: docs/html
 pages:
     - index.md
     - Introduction: intro.md
-site_name: Component Name Goes Here
-site_description: 'Component Description goes here'
+    - Usage:
+      - "Session Containers": session.md
+      - "Session Persistence": persistence.md
+      - "Session Middleware": middleware.md
+site_name: zend-expressive-session
+site_description: 'Sessions and session middleware for PSR-7 applications.'
 repo_url: 'https://github.com/zendframework/zend-expressive-session'
 copyright: 'Copyright (c) 2017 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
