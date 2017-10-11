@@ -58,7 +58,6 @@ class Session implements SessionInterface
     /**
      * @param mixed $default Default value to return if $name does not exist.
      * @return mixed
-     * @throws Exception\SessionSegmentConflictException if $name refers to a known session segment.
      */
     public function get(string $name, $default = null)
     {
@@ -72,16 +71,12 @@ class Session implements SessionInterface
 
     /**
      * @param mixed $value
-     * @throws Exception\SessionSegmentConflictException if $name refers to a known session segment.
      */
     public function set(string $name, $value) : void
     {
         $this->data[$name] = self::extractSerializableValue($value);
     }
 
-    /**
-     * @throws Exception\SessionSegmentConflictException if $name refers to a known session segment.
-     */
     public function unset(string $name) : void
     {
         unset($this->data[$name]);
