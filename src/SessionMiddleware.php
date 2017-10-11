@@ -7,10 +7,12 @@
 
 namespace Zend\Expressive\Session;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
+
+use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class SessionMiddleware implements MiddlewareInterface
 {
@@ -29,7 +31,7 @@ class SessionMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         $session = new LazySession($this->persistence, $request);
-        $response = $delegate->process($request->withAttribute(self::SESSION_ATTRIBUTE, $session));
+        $response = $delegate->{HANDLER_METHOD}($request->withAttribute(self::SESSION_ATTRIBUTE, $session));
         return $this->persistence->persistSession($session, $response);
     }
 }
