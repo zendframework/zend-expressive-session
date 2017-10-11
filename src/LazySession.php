@@ -53,11 +53,6 @@ final class LazySession implements SessionInterface
         return $this->getProxiedSession()->isRegenerated();
     }
 
-    public function segment(string $name) : SegmentInterface
-    {
-        return $this->getProxiedSession()->segment($name);
-    }
-
     public function toArray() : array
     {
         return $this->getProxiedSession()->toArray();
