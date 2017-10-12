@@ -24,7 +24,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class SessionMiddleware implements MiddlewareInterface
 {
-    const SESSION_ATTRIBUTE = 'session';
+    public const SESSION_ATTRIBUTE = 'session';
 
     private $persistence;
 
