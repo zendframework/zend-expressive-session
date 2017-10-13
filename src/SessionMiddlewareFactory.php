@@ -14,7 +14,8 @@ class SessionMiddlewareFactory
     public function __invoke(ContainerInterface $container) : SessionMiddleware
     {
         return new SessionMiddleware(
-            $container->get(SessionPersistenceInterface::class)
+            $container->get(SessionPersistenceInterface::class),
+            $container->get(SessionInterface::class)
         );
     }
 }

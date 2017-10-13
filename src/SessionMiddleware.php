@@ -21,15 +21,20 @@ class SessionMiddleware implements MiddlewareInterface
      */
     private $persistence;
 
-    public function __construct(SessionPersistenceInterface $persistence)
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    public function __construct(SessionPersistenceInterface $persistence, SessionInterface $request)
     {
         $this->persistence = $persistence;
+        $this->session = $session;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
-        $session = new LazySession($this->persistence, $request);
-        $response = $delegate->process($request->withAttribute(self::SESSION_ATTRIBUTE, $session));
+        $response = $delegate->process($request->withAttribute(self::SESSION_ATTRIBUTE, $this->session));
         return $this->persistence->persistSession($session, $response);
     }
 }
