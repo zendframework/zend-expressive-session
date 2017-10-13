@@ -21,6 +21,7 @@ class ConfigProvider
         return [
             'factories' => [
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
+                SessionInterface::class => SessionFactory::class,
             ],
         ];
     }

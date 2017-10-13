@@ -8,6 +8,7 @@
 namespace Zend\Expressive\Session;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Expressive\Session\Exception\InvalidRequestException;
 
 /**
  * Proxy to an underlying SessionInterface implementation.
@@ -32,13 +33,17 @@ final class LazySession implements SessionInterface
     /**
      * Request instance to use when calling $persistence->initializeSessionFromRequest()
      *
-     * @var ServerRequestInterface
+     * @var null|ServerRequestInterface
      */
     private $request;
 
-    public function __construct(SessionPersistenceInterface $persistence, ServerRequestInterface $request)
+    public function __construct(SessionPersistenceInterface $persistence)
     {
         $this->persistence = $persistence;
+    }
+
+    public function setRequest(ServerRequestInterface $request)
+    {
         $this->request = $request;
     }
 
@@ -102,6 +107,10 @@ final class LazySession implements SessionInterface
     {
         if ($this->proxiedSession) {
             return $this->proxiedSession;
+        }
+
+        if (! $this->request) {
+            throw InvalidRequestException::requestNotSet();
         }
 
         $this->proxiedSession = $this->persistence->initializeSessionFromRequest($this->request);

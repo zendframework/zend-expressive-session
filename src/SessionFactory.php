@@ -9,13 +9,16 @@ namespace Zend\Expressive\Session;
 
 use Psr\Container\ContainerInterface;
 
-class SessionMiddlewareFactory
+class SessionFactory
 {
-    public function __invoke(ContainerInterface $container) : SessionMiddleware
+    public function __invoke(ContainerInterface $container) : SessionInterface
     {
-        return new SessionMiddleware(
-            $container->get(SessionPersistenceInterface::class),
-            $container->get(SessionInterface::class)
+        if ($container->has(SessionInterface::class)) {
+            return $container->get(SessionInterface::class);
+        }
+
+        return new LazySession(
+            $container->get(SessionPersistenceInterface::class)
         );
     }
 }

@@ -9,6 +9,7 @@ namespace ZendTest\Expressive\Session;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Zend\Expressive\Session\SessionInterface;
 use Zend\Expressive\Session\SessionMiddleware;
 use Zend\Expressive\Session\SessionMiddlewareFactory;
 use Zend\Expressive\Session\SessionPersistenceInterface;
@@ -21,6 +22,9 @@ class SessionMiddlewareFactoryTest extends TestCase
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(SessionPersistenceInterface::class)->willReturn($persistence);
+
+        $session = $this->prophesize(SessionInterface::class)->reveal();
+        $container->get(SessionInterface::class)->willReturn($session);
 
         $factory = new SessionMiddlewareFactory();
 
