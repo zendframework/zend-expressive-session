@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Session\LazySession;
 use Zend\Expressive\Session\PhpSessionPersistence;
+use Zend\Expressive\Session\SessionInterface;
 use Zend\Expressive\Session\SessionMiddleware;
 use Zend\Expressive\Session\SessionPersistenceInterface;
 
@@ -22,8 +23,10 @@ class SessionMiddlewareTest extends TestCase
     public function testConstructorAcceptsConcretePersistenceInstances()
     {
         $persistence = $this->prophesize(SessionPersistenceInterface::class)->reveal();
-        $middleware = new SessionMiddleware($persistence);
+        $session = $this->prophesize(SessionInterface::class)->reveal();
+        $middleware = new SessionMiddleware($persistence, $session);
         $this->assertAttributeSame($persistence, 'persistence', $middleware);
+        $this->assertAttributeSame($session, 'session', $middleware);
     }
 
     public function testMiddlewareCreatesLazySessionAndPassesItToDelegateAndPersistsSessionInResponse()
@@ -51,7 +54,8 @@ class SessionMiddlewareTest extends TestCase
             )
             ->will([$response, 'reveal']);
 
-        $middleware = new SessionMiddleware($persistence->reveal());
+        $session = new LazySession($persistence->reveal());
+        $middleware = new SessionMiddleware($persistence->reveal(), $session);
         $this->assertSame($response->reveal(), $middleware->process($request->reveal(), $delegate->reveal()));
     }
 }

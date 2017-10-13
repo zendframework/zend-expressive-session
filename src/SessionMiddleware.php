@@ -34,6 +34,7 @@ class SessionMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
+        $this->session->setRequest($request);
         $response = $delegate->process($request->withAttribute(self::SESSION_ATTRIBUTE, $this->session));
         return $this->persistence->persistSession($session, $response);
     }

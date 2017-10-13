@@ -21,7 +21,8 @@ class LazySessionTest extends TestCase
         $this->proxy = $this->prophesize(SessionInterface::class);
         $this->persistence = $this->prophesize(SessionPersistenceInterface::class);
         $this->request = $this->prophesize(ServerRequestInterface::class);
-        $this->session = new LazySession($this->persistence->reveal(), $this->request->reveal());
+        $this->session = new LazySession($this->persistence->reveal());
+        $this->session->setRequest($this->request->reveal());
     }
 
     /**

@@ -8,8 +8,6 @@
 namespace Zend\Expressive\Session;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\ServerRequestFactory;
 
 class SessionFactory
 {
@@ -19,11 +17,8 @@ class SessionFactory
             return $container->get(SessionInterface::class);
         }
 
-        $request = $container->has(ServerRequestInterface::class) ? $container->get(ServerRequestInterface::class) : ServerRequestFactory::fromGlobals();
-
         return new LazySession(
-            $container->get(SessionPersistenceInterface::class),
-            $request
+            $container->get(SessionPersistenceInterface::class)
         );
     }
 }
