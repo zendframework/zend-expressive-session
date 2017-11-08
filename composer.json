@@ -11,17 +11,6 @@
         "zendframework",
         "zend-expressive"
     ],
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        },
-        "zf": {
-            "config-provider": "Zend\\Expressive\\Session\\ConfigProvider"
-        }
-    },
     "support": {
         "docs": "https://docs.zendframework.com/zend-expressive-session/",
         "issues": "https://github.com/zendframework/zend-expressive-session/issues",
@@ -55,6 +44,17 @@
     "autoload-dev": {
         "psr-4": {
             "ZendTest\\Expressive\\Session\\": "test/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
+        "zf": {
+            "config-provider": "Zend\\Expressive\\Session\\ConfigProvider"
         }
     },
     "scripts": {
