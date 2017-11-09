@@ -1,6 +1,6 @@
 {
     "name": "zendframework/zend-expressive-session",
-    "description": "Session container and middleware for PSR-7 applications",
+    "description": "Session container and middleware for PSR-7 applications.",
     "type": "library",
     "license": "BSD-3-Clause",
     "keywords": [

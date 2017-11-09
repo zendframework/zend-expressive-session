@@ -1,6 +1,6 @@
 # zend-expressive-session
 
-Web applications often need to perist user state between requests, and the
+Web applications often need to persist user state between requests, and the
 generally accepted way to do so is via _sessions_. While PHP provides its own
 session extension, it:
 
