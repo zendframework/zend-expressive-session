@@ -231,7 +231,6 @@ interface SessionInterface
     public function isRegenerated() : bool;
 }</code></pre>
 
-
 <p>The default implementation, and the one you'll most likely interact with, is
 <code>Zend\Expressive\Session\Session</code>.</p>
 <h2 id="usage">Usage</h2>
@@ -243,23 +242,18 @@ request attribute.</p>
 <pre class="codehilite"><code class="language-php">if ($session-&gt;has('user')) {
 }</code></pre>
 
-
 <p>and retrieve it:</p>
 <pre class="codehilite"><code class="language-php">$user = $session-&gt;get('user');</code></pre>
-
 
 <p>You can combine those operations, by passing a default value as a second
 argument to the <code>get()</code> method:</p>
 <pre class="codehilite"><code class="language-php">$user = $session-&gt;get('user', new GuestUser());</code></pre>
 
-
 <p>If a datum is no longer relevant in the session, <code>unset()</code> it:</p>
 <pre class="codehilite"><code class="language-php">$session-&gt;unset('user');</code></pre>
 
-
 <p>If none of the data is relevant, <code>clear()</code> the session:</p>
 <pre class="codehilite"><code class="language-php">$session-&gt;clear();</code></pre>
-
 
 <h2 id="lazy-sessions">Lazy Sessions</h2>
 <p>This package provides another implementation of <code>SessionInterface</code> via
@@ -281,7 +275,6 @@ regenerate the session in order to prevent session fixation and the attack
 vectors it invites.</p>
 <p>In those situations, call <code>regenerate()</code>:</p>
 <pre class="codehilite"><code class="language-php">$newSession = $session-&gt;regenerate();</code></pre>
-
 
 <p>The interface indicates that a new instance <em>should</em> be returned. However, in
 the default usage, you will have a <code>LazySession</code> instance (as described above),
@@ -360,7 +353,7 @@ deep in your application, but still have the data persisted correctly.</p>
     <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
     <script>var base_url = '..';</script>
-    <script src="../js/scripts-019f7ac1f7.js"></script>
+    <script src="../js/scripts-0b6185f4a5.js"></script>
     <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
