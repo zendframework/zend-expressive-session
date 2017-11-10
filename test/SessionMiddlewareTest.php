@@ -7,15 +7,17 @@
 
 namespace ZendTest\Expressive\Session;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Expressive\Session\LazySession;
 use Zend\Expressive\Session\PhpSessionPersistence;
 use Zend\Expressive\Session\SessionMiddleware;
 use Zend\Expressive\Session\SessionPersistenceInterface;
+
+use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class SessionMiddlewareTest extends TestCase
 {
@@ -36,7 +38,7 @@ class SessionMiddlewareTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class);
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::that([$request, 'reveal']))->will([$response, 'reveal']);
+        $delegate->{HANDLER_METHOD}(Argument::that([$request, 'reveal']))->will([$response, 'reveal']);
 
         $persistence = $this->prophesize(SessionPersistenceInterface::class);
         $persistence
