@@ -23,7 +23,7 @@
     },
     "require": {
         "php": "^7.1",
-        "http-interop/http-middleware": "^0.4.1",
+        "http-interop/http-server-middleware": "^1.0.1",
         "psr/container": "^1.0"
     },
     "require-dev": {
