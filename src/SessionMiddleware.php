@@ -14,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class SessionMiddleware implements MiddlewareInterface
 {
-    const SESSION_ATTRIBUTE = 'session';
+    public const SESSION_ATTRIBUTE = 'session';
 
     /**
      * @var SessionPersistenceInterface
