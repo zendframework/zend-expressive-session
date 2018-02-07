@@ -2,12 +2,12 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.0.0alpha1 - TBD
+## 1.0.0alpha1 - 2018-02-07
 
 ### Added
 
-- [#14](https://github.com/zendframework/zend-expressive-session/pull/14) adds
-  support for http-interop/http-server-middleware.
+- [#18](https://github.com/zendframework/zend-expressive-session/pull/18) adds
+  support for PSR-15 middleware.
 
 ### Changed
 
@@ -19,8 +19,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#14](https://github.com/zendframework/zend-expressive-session/pull/14) removes
-  support for http-interop/http-middleware.
+- [#14](https://github.com/zendframework/zend-expressive-session/pull/14) and
+  [#18](https://github.com/zendframework/zend-expressive-session/pull/18) remove
+  support for http-interop/http-middleware and http-interop/http-server-middleware.
 
 ### Fixed
 
