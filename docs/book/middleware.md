@@ -2,7 +2,7 @@
 
 zend-expressive-session provides middleware consuming
 [PSR-7](http://www.php-fig.org/psr/psr-7/) HTTP message instances, via
-implementation of [http-interop/http-middleware](https://github.com/http-interop/http-middleware)
+implementation of [PSR-15](https://www.php-fig.org/psr/psr-15/)
 interfaces.
 
 This middleware composes a [persistence](persistence.md) instance, and uses that
@@ -17,10 +17,10 @@ implementation:
 ```php
 namespace Zend\Expressive\Session;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class SessionMiddleware implements MiddlewareInterface
 {
@@ -33,10 +33,10 @@ class SessionMiddleware implements MiddlewareInterface
         $this->persistence = $persistence;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $session = new LazySession($this->persistence, $request);
-        $response = $delegate->process($request->withAttribute(self::SESSION_ATTRIBUTE, $session));
+        $response = $handler->handle($request->withAttribute(self::SESSION_ATTRIBUTE, $session));
         return $this->persistence->persistSession($session, $response);
     }
 }

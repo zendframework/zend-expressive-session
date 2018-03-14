@@ -1,19 +1,20 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive-session for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2017-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive-session/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Expressive\Session;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Session\LazySession;
-use Zend\Expressive\Session\PhpSessionPersistence;
 use Zend\Expressive\Session\SessionMiddleware;
 use Zend\Expressive\Session\SessionPersistenceInterface;
 
@@ -35,8 +36,8 @@ class SessionMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class);
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::that([$request, 'reveal']))->will([$response, 'reveal']);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::that([$request, 'reveal']))->will([$response, 'reveal']);
 
         $persistence = $this->prophesize(SessionPersistenceInterface::class);
         $persistence
@@ -52,6 +53,6 @@ class SessionMiddlewareTest extends TestCase
             ->will([$response, 'reveal']);
 
         $middleware = new SessionMiddleware($persistence->reveal());
-        $this->assertSame($response->reveal(), $middleware->process($request->reveal(), $delegate->reveal()));
+        $this->assertSame($response->reveal(), $middleware->process($request->reveal(), $handler->reveal()));
     }
 }
