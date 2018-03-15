@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.0.0alpha1 - 2018-02-07
+## 1.0.0 - 2018-03-15
 
 ### Added
 
@@ -22,26 +22,6 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#14](https://github.com/zendframework/zend-expressive-session/pull/14) and
   [#18](https://github.com/zendframework/zend-expressive-session/pull/18) remove
   support for http-interop/http-middleware and http-interop/http-server-middleware.
-
-### Fixed
-
-- Nothing.
-
-## 0.1.1 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
 
 - [#5](https://github.com/zendframework/zend-expressive-session/pull/5) removes
   the method `LazySession::segment()`. This method was a remnant from a previous
