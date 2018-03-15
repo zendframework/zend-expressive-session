@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.1.1 - TBD
+## 1.0.0 - 2018-03-15
 
 ### Added
 
-- Nothing.
+- [#18](https://github.com/zendframework/zend-expressive-session/pull/18) adds
+  support for PSR-15 middleware.
 
 ### Changed
 
@@ -17,6 +18,10 @@ All notable changes to this project will be documented in this file, in reverse 
 - Nothing.
 
 ### Removed
+
+- [#14](https://github.com/zendframework/zend-expressive-session/pull/14) and
+  [#18](https://github.com/zendframework/zend-expressive-session/pull/18) remove
+  support for http-interop/http-middleware and http-interop/http-server-middleware.
 
 - [#5](https://github.com/zendframework/zend-expressive-session/pull/5) removes
   the method `LazySession::segment()`. This method was a remnant from a previous
