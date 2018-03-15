@@ -11,6 +11,8 @@ namespace Zend\Expressive\Session\Exception;
 
 use RuntimeException;
 
+use function sprintf;
+
 class SessionSegmentConflictException extends RuntimeException implements ExceptionInterface
 {
     public static function whenRetrieving(string $name) : self

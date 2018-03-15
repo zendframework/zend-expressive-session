@@ -13,6 +13,11 @@ use PHPUnit\Framework\TestCase;
 use Zend\Expressive\Session\Session;
 use Zend\Expressive\Session\SessionInterface;
 
+use function json_decode;
+use function json_encode;
+
+use const JSON_PRESERVE_ZERO_FRACTION;
+
 class SessionTest extends TestCase
 {
     public function testImplementsSessionInterface()
@@ -109,7 +114,7 @@ class SessionTest extends TestCase
     public function serializedDataProvider() : iterable
     {
         $data = (object) ['test_case' => $this];
-        $expected = json_decode(json_encode($data, \JSON_PRESERVE_ZERO_FRACTION), true);
+        $expected = json_decode(json_encode($data, JSON_PRESERVE_ZERO_FRACTION), true);
         yield 'nested-objects' => [$data, $expected];
     }
 

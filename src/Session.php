@@ -9,6 +9,12 @@ declare(strict_types=1);
 
 namespace Zend\Expressive\Session;
 
+use function array_key_exists;
+use function json_decode;
+use function json_encode;
+
+use const JSON_PRESERVE_ZERO_FRACTION;
+
 class Session implements SessionInterface
 {
     /**
@@ -46,7 +52,7 @@ class Session implements SessionInterface
      */
     public static function extractSerializableValue($value)
     {
-        return json_decode(json_encode($value, \JSON_PRESERVE_ZERO_FRACTION), true);
+        return json_decode(json_encode($value, JSON_PRESERVE_ZERO_FRACTION), true);
     }
 
     /**

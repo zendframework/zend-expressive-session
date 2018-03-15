@@ -11,6 +11,11 @@ namespace Zend\Expressive\Session\Exception;
 
 use RuntimeException;
 
+use function get_class;
+use function gettype;
+use function is_object;
+use function sprintf;
+
 class InvalidSessionSegmentDataException extends RuntimeException implements ExceptionInterface
 {
     /**

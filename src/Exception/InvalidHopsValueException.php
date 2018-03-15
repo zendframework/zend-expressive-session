@@ -11,6 +11,8 @@ namespace Zend\Expressive\Session\Exception;
 
 use InvalidArgumentException;
 
+use function sprintf;
+
 class InvalidHopsValueException extends InvalidArgumentException implements ExceptionInterface
 {
     public static function valueTooLow(string $key, int $hops) : self
