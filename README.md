@@ -7,14 +7,6 @@ This library provides session handling middleware for PSR-7 applications, using
 an adapter-based approach that will allow usage of ext-session, JWT, or other
 approaches.
 
-> ### NOT YET RELEASED
->
-> This package is an experiment, and undergoing heavy architectural design
-> currently. As such, it is not yet on Packagist. You will need to add a
-> repository to your `composer.json` if you wish to use it at this time.
->
-> Use at your own risk!
-
 ## Installation
 
 Run the following to install this library:
