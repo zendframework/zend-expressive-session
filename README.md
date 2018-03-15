@@ -23,6 +23,14 @@ Run the following to install this library:
 $ composer require zendframework/zend-expressive-session
 ```
 
+However, the package is not immediately useful unless you have a persistence
+adapter. If you are okay with using ext-session, you can install the following
+package as well:
+
+```bash
+$ composer require zendframework/zend-expressive-session-ext
+```
+
 ## Documentation
 
 Documentation is [in the doc tree](docs/book/), and can be compiled using [mkdocs](http://www.mkdocs.org):
