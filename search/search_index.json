@@ -2,18 +2,13 @@
     "docs": [
         {
             "location": "/",
-            "text": "zend-expressive-session\n\n\n\n\n\n\nThis library provides session handling middleware for PSR-7 applications, using\nan adapter-based approach that will allow usage of ext-session, JWT, or other\napproaches.\n\n\n\n\nNOT YET RELEASED\n\n\nThis package is an experiment, and undergoing heavy architectural design\ncurrently. As such, it is not yet on Packagist. You will need to add a\nrepository to your \ncomposer.json\n if you wish to use it at this time.\n\n\nUse at your own risk!\n\n\n\n\nInstallation\n\n\nRun the following to install this library:\n\n\n$ composer require zendframework/zend-expressive-session\n\n\n\nHowever, the package is not immediately useful unless you have a persistence\nadapter. If you are okay with using ext-session, you can install the following\npackage as well:\n\n\n$ composer require zendframework/zend-expressive-session-ext\n\n\n\nDocumentation\n\n\nDocumentation is \nin the doc tree\n, and can be compiled using \nmkdocs\n:\n\n\n$ mkdocs build\n\n\n\nYou may also \nbrowse the documentation online\n.",
+            "text": "zend-expressive-session\n\n\n\n\n\n\nThis library provides session handling middleware for PSR-7 applications, using\nan adapter-based approach that will allow usage of ext-session, JWT, or other\napproaches.\n\n\nInstallation\n\n\nRun the following to install this library:\n\n\n$ composer require zendframework/zend-expressive-session\n\n\n\nHowever, the package is not immediately useful unless you have a persistence\nadapter. If you are okay with using ext-session, you can install the following\npackage as well:\n\n\n$ composer require zendframework/zend-expressive-session-ext\n\n\n\nDocumentation\n\n\nDocumentation is \nin the doc tree\n, and can be compiled using \nmkdocs\n:\n\n\n$ mkdocs build\n\n\n\nYou may also \nbrowse the documentation online\n.",
             "title": "zend-expressive-session"
         },
         {
             "location": "/#zend-expressive-session",
             "text": "This library provides session handling middleware for PSR-7 applications, using\nan adapter-based approach that will allow usage of ext-session, JWT, or other\napproaches.",
             "title": "zend-expressive-session"
-        },
-        {
-            "location": "/#not-yet-released",
-            "text": "This package is an experiment, and undergoing heavy architectural design\ncurrently. As such, it is not yet on Packagist. You will need to add a\nrepository to your  composer.json  if you wish to use it at this time.  Use at your own risk!",
-            "title": "NOT YET RELEASED"
         },
         {
             "location": "/#installation",
