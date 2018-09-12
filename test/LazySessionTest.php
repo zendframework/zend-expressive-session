@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Session\LazySession;
+use Zend\Expressive\Session\SessionIdentifierAwareInterface;
 use Zend\Expressive\Session\SessionInterface;
 use Zend\Expressive\Session\SessionPersistenceInterface;
 
@@ -148,5 +149,26 @@ class LazySessionTest extends TestCase
         $this->proxy->isRegenerated()->willReturn(true);
         $this->proxy->hasChanged()->shouldNotBeCalled();
         $this->assertTrue($this->session->hasChanged());
+    }
+
+    public function testGetIdReturnsEmptyStringIfProxyDoesNotImplementIdentifierAwareInterface()
+    {
+        $this->assertProxyCreated($this->persistence, $this->request);
+        $this->initializeProxy();
+        $this->assertSame('', $this->session->getId());
+    }
+
+    public function testGetIdReturnsValueFromProxyIfItImplementsIdentiferAwareInterface()
+    {
+        $proxy = $this->prophesize(SessionInterface::class);
+        $proxy->willImplement(SessionIdentifierAwareInterface::class);
+        $this->persistence
+            ->initializeSessionFromRequest(Argument::that([$this->request, 'reveal']))
+            ->will([$proxy, 'reveal']);
+        $proxy->getId()->willReturn('abcd1234');
+
+        $session = new LazySession($this->persistence->reveal(), $this->request->reveal());
+
+        $this->assertSame('abcd1234', $session->getId());
     }
 }

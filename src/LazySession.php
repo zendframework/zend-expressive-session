@@ -19,7 +19,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * method only on access to any of the various session data methods; otherwise,
  * the session will not be accessed, and, in most cases, started.
  */
-final class LazySession implements SessionInterface
+final class LazySession implements SessionInterface, SessionIdentifierAwareInterface
 {
     /**
      * @var SessionPersistenceInterface
@@ -98,6 +98,19 @@ final class LazySession implements SessionInterface
         }
 
         return $proxy->hasChanged();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 1.1.0
+     */
+    public function getId() : string
+    {
+        $proxiedSession = $this->getProxiedSession();
+        return $proxiedSession instanceof SessionIdentifierAwareInterface
+            ? $proxiedSession->getId()
+            : '';
     }
 
     private function getProxiedSession() : SessionInterface

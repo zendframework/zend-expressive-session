@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Expressive\Session;
 
-class Session implements SessionInterface
+class Session implements SessionInterface, SessionIdentifierAwareInterface
 {
     /**
      * Current data within the session.
@@ -17,6 +17,19 @@ class Session implements SessionInterface
      * @var array
      */
     private $data;
+
+    /**
+     * The session identifier, if any.
+     *
+     * This is present in the session to allow the session persistence
+     * implementation to be stateless. When present here, we can query for it
+     * when it is time to persist the session, instead of relying on state in
+     * the persistence instance (which may be shared between multiple
+     * requests).
+     *
+     * @var string
+     */
+    private $id;
 
     /**
      * @var bool
@@ -30,9 +43,10 @@ class Session implements SessionInterface
      */
     private $originalData;
 
-    public function __construct(array $data)
+    public function __construct(array $data, string $id = '')
     {
         $this->data = $this->originalData = $data;
+        $this->id = $id;
     }
 
     /**
@@ -108,5 +122,15 @@ class Session implements SessionInterface
     public function isRegenerated() : bool
     {
         return $this->isRegenerated;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 1.1.0
+     */
+    public function getId() : string
+    {
+        return $this->id;
     }
 }
