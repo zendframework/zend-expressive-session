@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.1.0 - TBD
+## 1.1.0 - 2018-09-12
 
 ### Added
 
@@ -13,28 +13,6 @@ All notable changes to this project will be documented in this file, in reverse 
   `getId()`, representing the identifier of a discovered session. This allows
   the identifier to be associated with its session data, ensuring that when
   concurrent requests are made, persistence operates on the correct identifier.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.0.1 - TBD
-
-### Added
-
-- Nothing.
 
 ### Changed
 
