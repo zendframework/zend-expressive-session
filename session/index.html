@@ -11,7 +11,7 @@
 
     <title>Session Containers - zend-expressive-session</title>
 
-    <link rel="stylesheet" href="../css/styles-e3f3751b65.css">
+    <link rel="stylesheet" href="../css/styles-3eb6fab3fb.css">
 </head>
 <body id="page-top">
 
@@ -63,56 +63,58 @@
             
             
                 <div class="nav navbar-nav navbar-collapse visible-xs-block ">
-                    <div class="subnavigation hidden-print">
-    <h4 class="subnavigation__title">
-        <a href="..">zend-expressive-session</a>
-    </h4>
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="..">zend-expressive-session</a>
+        </h4>
 
-    <h5 class="subnavigation__subtitle">Table of Contents</h5>
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
 
-    <ul class="subnavigation__list">
-        
+        <ul class="subnavigation__list">
             
-                <li class="subnavigation__list-item ">
-                    <a href=".." class="subnavigation__link">zend-expressive-session</a>
-                </li>
+                
+                    <li class="subnavigation__list-item ">
+                        <a href=".." class="subnavigation__link">zend-expressive-session</a>
+                    </li>
+                
             
-        
+                
+                    <li class="subnavigation__list-item ">
+                        <a href="../intro/" class="subnavigation__link">Introduction</a>
+                    </li>
+                
             
-                <li class="subnavigation__list-item ">
-                    <a href="../intro/" class="subnavigation__link">Introduction</a>
-                </li>
-            
-        
-            
-                <li class="subnavigation__list-item">
-                    <span class="subnavigation__headline">Usage</span>
-                    <ul class="subnavigation__list">
-                        
+                
+                    <li class="subnavigation__list-item">
+                        <span class="subnavigation__headline">Usage</span>
+                        <ul class="subnavigation__list">
                             
+                                
     <li class="subnavigation__list-item subnavigation__list-item--active">
         <a href="./" class="subnavigation__link">Session Containers</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../persistence/" class="subnavigation__link">Session Persistence</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../middleware/" class="subnavigation__link">Session Middleware</a>
     </li>
 
-                        
-                    </ul>
-                </li>
+                            
+                        </ul>
+                    </li>
+                
             
-        
-    </ul>
-</div>
+        </ul>
+    </div>
+
                 </div>
             
 
@@ -284,6 +286,30 @@ interface SessionInterface
 
 <p>The default implementation, and the one you'll most likely interact with, is
 <code>Zend\Expressive\Session\Session</code>.</p>
+<p>Additionally, since version 1.1.0, we provide <code>Zend\Expressive\Session\SessionIdentifierAwareInterface</code>:</p>
+<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Session;
+
+interface SessionIdentifierAwareInterface
+{
+    /**
+     * Retrieve the session identifier.
+     *
+     * This feature was added in 1.1.0 to allow the session persistence to be
+     * stateless. Previously, persistence implementations had to store the
+     * session identifier between calls to initializeSessionFromRequest() and
+     * persistSession(). When SessionInterface implementations also implement
+     * this method, the persistence implementation no longer needs to store it.
+     *
+     * This method will become a part of the SessionInterface in 2.0.0.
+     *
+     * @since 1.1.0
+     */
+    public function getId() : string;
+}</code></pre>
+
+<p><code>Zend\Expressive\Session\Session</code> and <code>Zend\Expressive\Session\LazySession</code> both
+implement this interface. <code>Session</code> accepts an optional identifier to its
+constructor.</p>
 <h2 id="usage">Usage</h2>
 <p>Session containers will typically be passed to your middleware using the
 <a href="../middleware/">SessionMiddleware</a>, via the
@@ -365,14 +391,16 @@ deep in your application, but still have the data persisted correctly.</p>
 </nav>
 
 
-<div class="help-wanted">
-    <p>
-        Found a mistake or want to contribute to the documentation?
-        <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/book/session.md" target="_blank" class="help-wanted__link">
-            Edit this page on GitHub!
-        </a>
-    </p>
-</div>
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/book/session.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
+
                 
             <!-- content:end -->
             </div>
@@ -386,56 +414,58 @@ deep in your application, but still have the data persisted correctly.</p>
         <optgroup label="Components"></optgroup>
     </select>
 </div>
-                    <div class="subnavigation hidden-print">
-    <h4 class="subnavigation__title">
-        <a href="..">zend-expressive-session</a>
-    </h4>
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="..">zend-expressive-session</a>
+        </h4>
 
-    <h5 class="subnavigation__subtitle">Table of Contents</h5>
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
 
-    <ul class="subnavigation__list">
-        
+        <ul class="subnavigation__list">
             
-                <li class="subnavigation__list-item ">
-                    <a href=".." class="subnavigation__link">zend-expressive-session</a>
-                </li>
+                
+                    <li class="subnavigation__list-item ">
+                        <a href=".." class="subnavigation__link">zend-expressive-session</a>
+                    </li>
+                
             
-        
+                
+                    <li class="subnavigation__list-item ">
+                        <a href="../intro/" class="subnavigation__link">Introduction</a>
+                    </li>
+                
             
-                <li class="subnavigation__list-item ">
-                    <a href="../intro/" class="subnavigation__link">Introduction</a>
-                </li>
-            
-        
-            
-                <li class="subnavigation__list-item">
-                    <span class="subnavigation__headline">Usage</span>
-                    <ul class="subnavigation__list">
-                        
+                
+                    <li class="subnavigation__list-item">
+                        <span class="subnavigation__headline">Usage</span>
+                        <ul class="subnavigation__list">
                             
+                                
     <li class="subnavigation__list-item subnavigation__list-item--active">
         <a href="./" class="subnavigation__link">Session Containers</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../persistence/" class="subnavigation__link">Session Persistence</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../middleware/" class="subnavigation__link">Session Middleware</a>
     </li>
 
-                        
-                    </ul>
-                </li>
+                            
+                        </ul>
+                    </li>
+                
             
-        
-    </ul>
-</div>
+        </ul>
+    </div>
+
                 
             </div>
         </div>
@@ -488,6 +518,15 @@ deep in your application, but still have the data persisted correctly.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
+                    <li class="support__list-item">
+                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -498,7 +537,7 @@ deep in your application, but still have the data persisted correctly.</p>
         var base_url = '..',
             siteName = 'zend-expressive-session';
     </script>
-    <script src="../js/scripts-dcbafde59f.js"></script>
+    <script src="../js/scripts-a978f1ec1a.js"></script>
         <script src="../search/require.js"></script>
         <script src="../search/search.js"></script>
 
