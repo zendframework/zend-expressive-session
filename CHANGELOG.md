@@ -6,7 +6,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#27](https://github.com/zendframework/zend-expressive-session/pull/27) adds a new interface, `Zend\Expressive\Session\SessionIdentifierAwareInterface`.
+  `SessionInterface` implementations should also implement this interface, and
+  persistence implementations should only create and consume session
+  implementations that implement it. The interface defines a single method,
+  `getId()`, representing the identifier of a discovered session. This allows
+  the identifier to be associated with its session data, ensuring that when
+  concurrent requests are made, persistence operates on the correct identifier.
 
 ### Changed
 

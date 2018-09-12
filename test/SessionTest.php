@@ -11,6 +11,7 @@ namespace ZendTest\Expressive\Session;
 
 use PHPUnit\Framework\TestCase;
 use Zend\Expressive\Session\Session;
+use Zend\Expressive\Session\SessionIdentifierAwareInterface;
 use Zend\Expressive\Session\SessionInterface;
 
 class SessionTest extends TestCase
@@ -122,5 +123,23 @@ class SessionTest extends TestCase
         $session->set('foo', $data);
         $this->assertNotSame($data, $session->get('foo'));
         $this->assertSame($expected, $session->get('foo'));
+    }
+
+    public function testImplementsSessionIdentifierAwareInterface()
+    {
+        $session = new Session([]);
+        $this->assertInstanceOf(SessionIdentifierAwareInterface::class, $session);
+    }
+
+    public function testGetIdReturnsEmptyStringIfNoIdentifierProvidedToConstructor()
+    {
+        $session = new Session([]);
+        $this->assertSame('', $session->getId());
+    }
+
+    public function testGetIdReturnsValueProvidedToConstructor()
+    {
+        $session = new Session([], '1234abcd');
+        $this->assertSame('1234abcd', $session->getId());
     }
 }
