@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Session\LazySession;
+use Zend\Expressive\Session\SessionCookiePersistenceInterface;
 use Zend\Expressive\Session\SessionIdentifierAwareInterface;
 use Zend\Expressive\Session\SessionInterface;
 use Zend\Expressive\Session\SessionPersistenceInterface;
@@ -170,5 +171,53 @@ class LazySessionTest extends TestCase
         $session = new LazySession($this->persistence->reveal(), $this->request->reveal());
 
         $this->assertSame('abcd1234', $session->getId());
+    }
+
+    public function testPersistSessionForDoesNothingIfProxyDoesNotImplementSessionCookiePersistence()
+    {
+        $this->assertProxyCreated($this->persistence, $this->request);
+        $this->initializeProxy();
+
+        $session = new LazySession($this->persistence->reveal(), $this->request->reveal());
+
+        $this->assertNull($session->persistSessionFor(60));
+    }
+
+    public function testPersistSessionForProxiesToUnderlyingSession()
+    {
+        $proxy = $this->prophesize(SessionInterface::class);
+        $proxy->willImplement(SessionCookiePersistenceInterface::class);
+        $this->persistence
+            ->initializeSessionFromRequest(Argument::that([$this->request, 'reveal']))
+            ->will([$proxy, 'reveal']);
+        $proxy->persistSessionFor(60)->shouldBeCalled();
+
+        $session = new LazySession($this->persistence->reveal(), $this->request->reveal());
+
+        $this->assertNull($session->persistSessionFor(60));
+    }
+
+    public function testGetSessionLifetimeReturnsZeroIfProxyDoesNotImplementSessionCookiePersistence()
+    {
+        $this->assertProxyCreated($this->persistence, $this->request);
+        $this->initializeProxy();
+
+        $session = new LazySession($this->persistence->reveal(), $this->request->reveal());
+
+        $this->assertSame(0, $session->getSessionLifetime());
+    }
+
+    public function testGetSessionLifetimeReturnsValueFromProxy()
+    {
+        $proxy = $this->prophesize(SessionInterface::class);
+        $proxy->willImplement(SessionCookiePersistenceInterface::class);
+        $this->persistence
+            ->initializeSessionFromRequest(Argument::that([$this->request, 'reveal']))
+            ->will([$proxy, 'reveal']);
+        $proxy->getSessionLifetime()->willReturn(60);
+
+        $session = new LazySession($this->persistence->reveal(), $this->request->reveal());
+
+        $this->assertSame(60, $session->getSessionLifetime());
     }
 }

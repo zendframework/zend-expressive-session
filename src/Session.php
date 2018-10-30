@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace Zend\Expressive\Session;
 
-class Session implements SessionInterface, SessionIdentifierAwareInterface
+class Session implements
+    SessionCookiePersistenceInterface,
+    SessionIdentifierAwareInterface,
+    SessionInterface
 {
     /**
      * Current data within the session.
@@ -43,10 +46,21 @@ class Session implements SessionInterface, SessionIdentifierAwareInterface
      */
     private $originalData;
 
+    /**
+     * Lifetime of the session cookie.
+     *
+     * @var int
+     */
+    private $sessionLifetime = 0;
+
     public function __construct(array $data, string $id = '')
     {
         $this->data = $this->originalData = $data;
         $this->id = $id;
+
+        if (isset($data[SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY])) {
+            $this->sessionLifetime = $data[SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY];
+        }
     }
 
     /**
@@ -132,5 +146,26 @@ class Session implements SessionInterface, SessionIdentifierAwareInterface
     public function getId() : string
     {
         return $this->id;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 1.2.0
+     */
+    public function persistSessionFor(int $duration) : void
+    {
+        $this->sessionLifetime = $duration;
+        $this->set(SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY, $duration);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 1.2.0
+     */
+    public function getSessionLifetime() : int
+    {
+        return $this->sessionLifetime;
     }
 }
