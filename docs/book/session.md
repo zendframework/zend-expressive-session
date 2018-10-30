@@ -219,18 +219,18 @@ $session->clear();
 
 - Since 1.2.0
 
-You can hint to the session persistence engine that the session cookie should
+You can hint to the session persistence engine how long the session should
 persist:
 
 ```php
 $session->persistSessionFor(60 * 60 * 24 * 7); // persist for 7 days
 ```
 
-To make the session cookie expire when the browser session is terminated
-(default behavior), use zero or a negative integer:
+To make the session expire when the browser session is terminated (default
+behavior), use zero or a negative integer:
 
 ```php
-$session->persistSessionFor(0); // expire cookie after session is over
+$session->persistSessionFor(0); // expire data after session is over
 ```
 
 ## Lazy Sessions

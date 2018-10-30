@@ -88,14 +88,15 @@ async compatible.
 
 - Since 1.2.0.
 
-If your session persistence supports persistent sessions &mdash; for example, by
-setting an `Expires` or `Max-Age` cookie directive &mdash; then you can opt to
-globally set a default session duration, or allow developers to hint a desired
-session duration via the session container using
+If your persistence implementation supports persistent sessions &mdash; for
+example, by setting an `Expires` or `Max-Age` cookie directive &mdash; then you
+can opt to globally set a default session duration, or allow developers to hint
+a desired session duration via the session container using
 `SessionContainerPersistenceInterface::persistSessionFor()`.
 
 Implementations SHOULD honor the value of `SessionContainerPersistenceInterface::getSessionLifetime()`
-when persisting the session data. This could mean:
+when persisting the session data. This could mean either or both of the
+following:
 
 - Ensuring that the session data will not be purged until after the specified
   TTL value.
@@ -109,3 +110,6 @@ $ttl = $session instanceof SessionContainerPersistenceInterface
     ? $session->getSessionLifetime()
     : $defaultLifetime; // likely 0, to indicate automatic expiry
 ```
+
+`getSessionLifetime()` returns an `integer` value indicating the number of
+seconds the session should persist.
