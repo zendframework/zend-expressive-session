@@ -11,7 +11,7 @@
 
     <title>Session Persistence - zend-expressive-session</title>
 
-    <link rel="stylesheet" href="../css/styles-3eb6fab3fb.css">
+    <link rel="stylesheet" href="../css/styles-e95dab66f8.css">
 </head>
 <body id="page-top">
 
@@ -171,17 +171,23 @@
             <!-- content:begin -->
                 
                     <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="https://framework.zend.com/">Home</a></li>
-  <li><a href="https://docs.zendframework.com/">Docs</a></li>
-  <li><a href="..">zend-expressive-session</a></li>
-  
+    <li><a href="https://framework.zend.com/">Home</a></li>
+
     
-      
-        <li>Usage</li>
-      
+        <li><a href="https://docs.zendframework.com/">Documentation</a></li>
+
+        
+            <li><a href="..">zend-expressive-session</a></li>
+
+            
+                
+                    <li>Usage</li>
+                
+            
+
+            <li class="active">Session Persistence</li>
+        
     
-  
-  <li class="active">Session Persistence</li>
 </ol>
 
 
@@ -196,6 +202,10 @@
                 
                     <li class="toc__entry">
                         <a href="#session-identifiers" class="toc__link">Session identifiers</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#persistent-sessions" class="toc__link">Persistent sessions</a>
                     </li>
                 
             </ul>
@@ -277,6 +287,31 @@ session identifier.</p>
 we recommend that implementations only create instances that implement the
 <code>SessionIdentifierAwareInterface</code> going forward in order to make themselves
 async compatible.</p>
+<h2 id="persistent-sessions">Persistent sessions</h2>
+<ul>
+<li>Since 1.2.0.</li>
+</ul>
+<p>If your persistence implementation supports persistent sessions &mdash; for
+example, by setting an <code>Expires</code> or <code>Max-Age</code> cookie directive &mdash; then you
+can opt to globally set a default session duration, or allow developers to hint
+a desired session duration via the session container using
+<code>SessionContainerPersistenceInterface::persistSessionFor()</code>.</p>
+<p>Implementations SHOULD honor the value of <code>SessionContainerPersistenceInterface::getSessionLifetime()</code>
+when persisting the session data. This could mean either or both of the
+following:</p>
+<ul>
+<li>Ensuring that the session data will not be purged until after the specified
+  TTL value.</li>
+<li>Setting an <code>Expires</code> or <code>Max-Age</code> cookie directive.</li>
+</ul>
+<p>In each case, the persistence engine should query the <code>Session</code> instance for a
+TTL value:</p>
+<pre class="codehilite"><code class="language-php">$ttl = $session instanceof SessionContainerPersistenceInterface
+    ? $session-&gt;getSessionLifetime()
+    : $defaultLifetime; // likely 0, to indicate automatic expiry</code></pre>
+
+<p><code>getSessionLifetime()</code> returns an <code>integer</code> value indicating the number of
+seconds the session should persist.</p>
 
 
 
