@@ -79,7 +79,7 @@ interface SessionInterface
 The default implementation, and the one you'll most likely interact with, is
 `Zend\Expressive\Session\Session`.
 
-Additionally, since version 1.1.0, we provide `Zend\Expressive\Session\SessionIdentifierAwareInterface`:
+Since version 1.1.0, we provide `Zend\Expressive\Session\SessionIdentifierAwareInterface`:
 
 ```php
 namespace Zend\Expressive\Session;
@@ -103,9 +103,78 @@ interface SessionIdentifierAwareInterface
 }
 ```
 
+Since version 1.2.0, we provide `Zend\Expressive\Session\SessionCookiePersistenceInterface`:
+
+```php
+namespace Zend\Expressive\Session;
+
+/**
+ * Allow marking session cookies as persistent.
+ *
+ * It can be useful to mark a session as persistent: e.g., for a "Remember Me"
+ * feature when logging a user into your system. PHP provides this capability
+ * via ext-session with the $lifetime argument to session_set_cookie_params()
+ * as well as by the session.cookie_lifetime INI setting. The latter will set
+ * the value for all session cookies sent (or until the value is changed via
+ * an ini_set() call), while the former will only affect cookies created during
+ * the current script lifetime.
+ *
+ * Persistence engines may, of course, allow setting a global lifetime. This
+ * interface allows developers to set the lifetime programmatically. Persistence
+ * implementations are encouraged to use the value to set the cookie lifetime
+ * when creating and returning a cookie. Additionally, to ensure the cookie
+ * lifetime originally requested is honored when a session is regenerated, we
+ * recommend persistence engines to store the TTL in the session data itself,
+ * so that it can be re-sent in such scenarios.
+ */
+interface SessionCookiePersistenceInterface
+{
+    const SESSION_LIFETIME_KEY = '__SESSION_TTL__';
+
+    /**
+     * Define how long the session cookie should live.
+     *
+     * Use this value to detail to the session persistence engine how long the
+     * session cookie should live.
+     *
+     * This value could be passed as the $lifetime value of
+     * session_set_cookie_params(), or used to create an Expires or Max-Age
+     * parameter for a session cookie.
+     *
+     * Since cookie lifetime is communicated by the server to the client, and
+     * not vice versa, the value should likely be persisted in the session
+     * itself, to ensure that session regeneration uses the same value. We
+     * recommend using the SESSION_LIFETIME_KEY value to communicate this.
+     *
+     * @param int $duration Number of seconds the cookie should persist for.
+     */
+    public function persistSessionFor(int $duration) : void;
+
+    /**
+     * Determine how long the session cookie should live.
+     *
+     * Generally, this will return the value provided to persistFor().
+     *
+     * If that method has not been called, the value can return one of the
+     * following:
+     *
+     * - 0 or a negative value, to indicate the cookie should be treated as a
+     *   session cookie, and expire when the window is closed. This should be
+     *   the default behavior.
+     * - If persistFor() was provided during session creation or anytime later,
+     *   the persistence engine should pull the TTL value from the session itself
+     *   and return it here. Typically, this value should be communicated via
+     *   the SESSION_LIFETIME_KEY value of the session.
+     */
+    public function getSessionLifetime() : int;
+}
+```
+
 `Zend\Expressive\Session\Session` and `Zend\Expressive\Session\LazySession` both
-implement this interface. `Session` accepts an optional identifier to its
-constructor.
+implement each of the interfaces listed above. `Session` accepts an optional
+identifier to its constructor, and will use the value of the
+`SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY` in the provided data
+to seed the session cookie lifetime, if present.
 
 ## Usage
 
@@ -144,6 +213,24 @@ If none of the data is relevant, `clear()` the session:
 
 ```php
 $session->clear();
+```
+
+### Persistent Sessions
+
+- Since 1.2.0
+
+You can hint to the session persistence engine that the session cookie should
+persist:
+
+```php
+$session->persistSessionFor(60 * 60 * 24 * 7); // persist for 7 days
+```
+
+To make the session cookie expire when the browser session is terminated
+(default behavior), use zero or a negative integer:
+
+```php
+$session->persistSessionFor(0); // expire cookie after session is over
 ```
 
 ## Lazy Sessions
