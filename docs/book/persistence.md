@@ -83,3 +83,33 @@ Considering that persistence implementations also _create_ the session instance,
 we recommend that implementations only create instances that implement the
 `SessionIdentifierAwareInterface` going forward in order to make themselves
 async compatible.
+
+## Persistent sessions
+
+- Since 1.2.0.
+
+If your persistence implementation supports persistent sessions &mdash; for
+example, by setting an `Expires` or `Max-Age` cookie directive &mdash; then you
+can opt to globally set a default session duration, or allow developers to hint
+a desired session duration via the session container using
+`SessionContainerPersistenceInterface::persistSessionFor()`.
+
+Implementations SHOULD honor the value of `SessionContainerPersistenceInterface::getSessionLifetime()`
+when persisting the session data. This could mean either or both of the
+following:
+
+- Ensuring that the session data will not be purged until after the specified
+  TTL value.
+- Setting an `Expires` or `Max-Age` cookie directive.
+
+In each case, the persistence engine should query the `Session` instance for a
+TTL value:
+
+```php
+$ttl = $session instanceof SessionContainerPersistenceInterface
+    ? $session->getSessionLifetime()
+    : $defaultLifetime; // likely 0, to indicate automatic expiry
+```
+
+`getSessionLifetime()` returns an `integer` value indicating the number of
+seconds the session should persist.

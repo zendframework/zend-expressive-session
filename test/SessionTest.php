@@ -11,6 +11,7 @@ namespace ZendTest\Expressive\Session;
 
 use PHPUnit\Framework\TestCase;
 use Zend\Expressive\Session\Session;
+use Zend\Expressive\Session\SessionCookiePersistenceInterface;
 use Zend\Expressive\Session\SessionIdentifierAwareInterface;
 use Zend\Expressive\Session\SessionInterface;
 
@@ -141,5 +142,40 @@ class SessionTest extends TestCase
     {
         $session = new Session([], '1234abcd');
         $this->assertSame('1234abcd', $session->getId());
+    }
+
+    public function testImplementsSessionCookiePersistenceInterface()
+    {
+        $session = new Session([]);
+        $this->assertInstanceOf(SessionCookiePersistenceInterface::class, $session);
+    }
+
+    public function testDefaultSessionCookieLifetimeIsZero()
+    {
+        $session = new Session([]);
+        $this->assertSame(0, $session->getSessionLifetime());
+    }
+
+    public function testAllowsSettingCookieLifetime()
+    {
+        $session = new Session([]);
+        $session->persistSessionFor(60);
+        $this->assertSame(60, $session->getSessionLifetime());
+    }
+
+    public function testGetSessionLifetimeReturnsValueOfSessionLifetimeKeyWhenPresentInSession()
+    {
+        $session = new Session([
+            SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY => 60,
+        ]);
+        $this->assertSame(60, $session->getSessionLifetime());
+    }
+
+    public function testPersistingSessionCookieLifetimeSetsLifetimeKeyInSessionData()
+    {
+        $session = new Session([]);
+        $session->persistSessionFor(60);
+        $this->assertTrue($session->has(SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY));
+        $this->assertSame(60, $session->get(SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY));
     }
 }

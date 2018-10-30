@@ -2,15 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.1.1 - TBD
+## 1.2.0 - 2018-10-30
 
 ### Added
 
-- Nothing.
+- [#28](https://github.com/zendframework/zend-expressive-session/pull/28) adds a new interface, `SessionCookiePersistenceInterface`, defining:
+  - the constant `SESSION_LIFETIME_KEY`
+  - the method `persistSessionFor(int $duration) : void`, for developers to hint
+    to the persistence engine how long a session should last
+  - the method `getSessionLifetime() : int`, for persistence engines to
+    determine if a specific session duration was requested
 
 ### Changed
 
-- Nothing.
+- [#28](https://github.com/zendframework/zend-expressive-session/pull/28) updates both `Session` and `LazySession` to implement the new
+  `SessionCookiePersistenceInterface.  If a `SessionCookiePersistenceInterface::SESSION_LIFETIME_KEY`
+  is present in the initial session data provided to a `Session` instance, this
+  value will be used to indicate the requested session duration; otherwise, zero
+  is used, indicating the session should end when the browser is closed.
 
 ### Deprecated
 
