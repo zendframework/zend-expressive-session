@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace Zend\Expressive\Session;
 
 use function array_key_exists;
-use function json_encode;
 use function json_decode;
+use function json_encode;
 
 use const JSON_PRESERVE_ZERO_FRACTION;
 
