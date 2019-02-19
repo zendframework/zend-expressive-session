@@ -23,8 +23,12 @@ class SessionMiddleware implements MiddlewareInterface
      */
     private $persistence;
 
-    public function __construct(SessionPersistenceInterface $persistence)
+    public function __construct(SessionPersistenceInterface $persistence, SaveHandlerInterface $saveHandler = null)
     {
+        if (null !== $saveHandler) {
+            session_set_save_handler($saveHandler, true);
+        }
+
         $this->persistence = $persistence;
     }
 
