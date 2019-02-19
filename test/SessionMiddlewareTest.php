@@ -15,15 +15,19 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Session\LazySession;
+use Zend\Expressive\Session\SaveHandlerInterface;
 use Zend\Expressive\Session\SessionMiddleware;
 use Zend\Expressive\Session\SessionPersistenceInterface;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class SessionMiddlewareTest extends TestCase
 {
     public function testConstructorAcceptsConcretePersistenceInstances()
     {
         $persistence = $this->prophesize(SessionPersistenceInterface::class)->reveal();
-        $middleware = new SessionMiddleware($persistence);
+        $middleware = new SessionMiddleware($persistence, null);
         $this->assertAttributeSame($persistence, 'persistence', $middleware);
     }
 
@@ -52,7 +56,16 @@ class SessionMiddlewareTest extends TestCase
             )
             ->will([$response, 'reveal']);
 
-        $middleware = new SessionMiddleware($persistence->reveal());
+        $middleware = new SessionMiddleware($persistence->reveal(), null);
         $this->assertSame($response->reveal(), $middleware->process($request->reveal(), $handler->reveal()));
+    }
+
+    public function testConstructorAcceptsConcreteSaveHandlerInstances()
+    {
+        $saveHandler = $this->prophesize(SaveHandlerInterface::class)->reveal();
+        $persistence = $this->prophesize(SessionPersistenceInterface::class)->reveal();
+
+        $middleware = new SessionMiddleware($persistence, $saveHandler);
+        $this->assertAttributeSame($persistence, 'persistence', $middleware);
     }
 }
