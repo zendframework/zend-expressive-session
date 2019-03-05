@@ -32,7 +32,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#34](https://github.com/zendframework/zend-expressive-session/pull/34) provides several performance optimizations in `Zend\Expressives\Session\LazySession`.
 
 ### Deprecated
 
