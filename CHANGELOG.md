@@ -24,11 +24,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.2.1 - TBD
+## 1.2.1 - 2019-03-05
 
 ### Added
 
-- Nothing.
+- [#33](https://github.com/zendframework/zend-expressive-session/pull/33) adds support for PHP 7.3.
 
 ### Changed
 
