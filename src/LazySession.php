@@ -55,7 +55,11 @@ final class LazySession implements
 
     public function isRegenerated() : bool
     {
-        return $this->getProxiedSession()->isRegenerated();
+        if (! $this->proxiedSession) {
+            return false;
+        }
+
+        return $this->proxiedSession->isRegenerated();
     }
 
     public function toArray() : array
@@ -94,13 +98,11 @@ final class LazySession implements
             return false;
         }
 
-        $proxy = $this->getProxiedSession();
-
-        if ($proxy->isRegenerated()) {
+        if ($this->proxiedSession->isRegenerated()) {
             return true;
         }
 
-        return $proxy->hasChanged();
+        return $this->proxiedSession->hasChanged();
     }
 
     /**
