@@ -31,7 +31,7 @@ class SessionMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $session = new LazySession($this->persistence, $request);
-        $response = $handler->handle($request->withAttribute(self::SESSION_ATTRIBUTE, $session));
+        $response = $handler->handle($request->withAttribute(static::SESSION_ATTRIBUTE, $session));
         return $this->persistence->persistSession($session, $response);
     }
 }
