@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sessions and session middleware for PSR-7 applications.">  
-    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link rel="shortcut icon" href="//img/favicon.ico">
 
-    <title>Introduction - zend-expressive-session - Zend Framework Docs</title>
+    <title>zend-expressive-session - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-f3b53f5ceb.css">
+    <link rel="stylesheet" href="//css/styles-f3b53f5ceb.css">
 </head>
 <body id="page-top">
 
@@ -31,7 +31,7 @@
             
             <span class="navbar-brand">
                 <a class="logo-link" href="https://framework.zend.com/" data-tooltip data-placement="bottom" title="Go to the ZF homepage">
-                    <img src="../img/zend-framework-logo.svg" height="28" alt="Zend Framework">
+                    <img src="//img/zend-framework-logo.svg" height="28" alt="Zend Framework">
                 </a>
             </span>
         </div>
@@ -66,7 +66,7 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-expressive-session</a>
+            <a href="/.">zend-expressive-session</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -75,13 +75,13 @@
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href=".." class="subnavigation__link">zend-expressive-session</a>
+                        <a href="/." class="subnavigation__link">zend-expressive-session</a>
                     </li>
                 
             
                 
-                    <li class="subnavigation__list-item subnavigation__list-item--active">
-                        <a href="./" class="subnavigation__link">Introduction</a>
+                    <li class="subnavigation__list-item ">
+                        <a href="/intro/" class="subnavigation__link">Introduction</a>
                     </li>
                 
             
@@ -92,19 +92,19 @@
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../session/" class="subnavigation__link">Session Containers</a>
+        <a href="/session/" class="subnavigation__link">Session Containers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../persistence/" class="subnavigation__link">Session Persistence</a>
+        <a href="/persistence/" class="subnavigation__link">Session Persistence</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../middleware/" class="subnavigation__link">Session Middleware</a>
+        <a href="/middleware/" class="subnavigation__link">Session Middleware</a>
     </li>
 
                             
@@ -181,152 +181,18 @@
             <div class="col-md-9 col-xs-12 content" role="main">
             <!-- content:begin -->
                 
-                    <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-    <li><a href="https://framework.zend.com/">Home</a></li>
 
-    
-        <li><a href="https://docs.zendframework.com/">Documentation</a></li>
+<h1 class="content__title">404</h1>
+<blockquote>
+    <h3>Something went wrong!</h3>
+    <p>
+        We're sorry, but the page you are looking for does not exist.
+    </p>
+</blockquote>
 
-        
-            <li><a href="..">zend-expressive-session</a></li>
-
-            
-
-            <li class="active">Introduction</li>
-        
-    
-</ol>
+<a href="/" class="btn btn-default" role="button">Go to homepage</a>
 
 
-    
-
-    
-    
-
-    
-    
-        <div class="toc">
-            <h6 class="toc__headline">In This Article</h6>
-            <ul class="toc__list">
-                
-                    <li class="toc__entry">
-                        <a href="#installation" class="toc__link">Installation</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#features" class="toc__link">Features</a>
-                    </li>
-                
-            </ul>
-        </div>
-    
-
-
-    <h1 id="zend-expressive-session">zend-expressive-session</h1>
-<p>Web applications often need to persist user state between requests, and the
-generally accepted way to do so is via <em>sessions</em>. While PHP provides its own
-session extension, it:</p>
-<ul>
-<li>uses global functions that affect global state.</li>
-<li>relies on a superglobal for access to both read and write the session data.</li>
-<li>incurs either filesystem or network I/O on every request, depending on the
-  session storage handler.</li>
-<li>can clobber the <code>Set-Cookie</code> header when other processes also set it.</li>
-</ul>
-<p>Some projects, such as <a href="https://github.com/psr7-sessions/storageless">psr-7-sessions/storageless</a>,
-take a different approach, using <a href="https://tools.ietf.org/html/rfc7519">JSON Web Tokens</a> (JWT).</p>
-<p>The goals of zend-expressive-session are:</p>
-<ul>
-<li>to abstract the way users interact with session storage.</li>
-<li>to abstract how sessions are persisted, to allow both standard ext-session,
-  but also other paradigms such as JWT.</li>
-<li>to provide session capabilities that "play nice" with
-  <a href="http://www.php-fig.org/psr/psr-7/">PSR-7</a> and middleware.</li>
-</ul>
-<h2 id="installation">Installation</h2>
-<p>Use <a href="https://getcomposer.org">Composer</a> to install this package:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-session</code></pre>
-
-<p>However, the package is not immediately useful unless you have a persistence
-adapter. If you are okay with using ext-session, you can install the following
-package as well:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-session-ext</code></pre>
-
-<h2 id="features">Features</h2>
-<p>zend-expressive-session provides the following:</p>
-<ul>
-<li>Interfaces for:<ul>
-<li>session containers</li>
-<li>session persistence</li>
-</ul>
-</li>
-<li>An implementation of the session container.</li>
-<li>A "lazy-loading" implementation of the session container, to allow delaying
-  any de/serialization and/or I/O processes until session data is requested;
-  this implementation decorates a normal session container.</li>
-<li>PSR-7 middleware that:<ul>
-<li>composes a session persistence implementation.</li>
-<li>initializes the lazy-loading session container, using the session
-  persistence implementation.</li>
-<li>delegates to the next middleware, passing the session container into the
-  request.</li>
-<li>finalizes the session before returning the response.</li>
-</ul>
-</li>
-</ul>
-<p>Persistence implementations locate session information from the requests (e.g.,
-via a cookie) in order to initialize the session. On completion of the request,
-they examine the session container for changes and/or to see if it is empty, and
-provide data to the response so as to notify the client of the session (e.g.,
-via a <code>Set-Cookie</code> header).</p>
-<p>Note that the goals of this package are solely focused on <em>session persistence</em>
-and <em>access to session data by middleware</em>. If you also need other features
-often related to session data, you may want to consider the following packages:</p>
-<ul>
-<li><a href="https://github.com/zendframework/zend-expressive-flash">zend-expressive-flash</a>: 
-  provides flash message capabilities.</li>
-<li><a href="https://github.com/zendframework/zend-expressive-csrf">zend-expressive-csrf</a>: 
-  provides CSRF token generation, storage, and verification, using either a
-  session container, or flash messages.</li>
-</ul>
-
-
-
-    <nav>
-    <ul class="page-nav hidden-print">
-
-        
-        <li class="page-nav__item">
-            
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="..">
-                    <i class="fa fa-chevron-left"></i> Previous
-                </a>
-            
-        </li>
-
-        
-        <li class="page-nav__item">
-            
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../session/">
-                    Next <i class="fa fa-chevron-right"></i>
-                </a>
-            
-        </li>
-    </ul>
-</nav>
-
-
-
-    <div class="help-wanted">
-        <p>
-            Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/book/intro.md" target="_blank" class="help-wanted__link">
-                Edit this page on GitHub!
-            </a>
-        </p>
-    </div>
-
-                
             <!-- content:end -->
             </div>
             <div class="col-md-3 col-xs-12 sidebar">
@@ -342,7 +208,7 @@ often related to session data, you may want to consider the following packages:<
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-expressive-session</a>
+            <a href="/.">zend-expressive-session</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -351,13 +217,13 @@ often related to session data, you may want to consider the following packages:<
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href=".." class="subnavigation__link">zend-expressive-session</a>
+                        <a href="/." class="subnavigation__link">zend-expressive-session</a>
                     </li>
                 
             
                 
-                    <li class="subnavigation__list-item subnavigation__list-item--active">
-                        <a href="./" class="subnavigation__link">Introduction</a>
+                    <li class="subnavigation__list-item ">
+                        <a href="/intro/" class="subnavigation__link">Introduction</a>
                     </li>
                 
             
@@ -368,19 +234,19 @@ often related to session data, you may want to consider the following packages:<
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../session/" class="subnavigation__link">Session Containers</a>
+        <a href="/session/" class="subnavigation__link">Session Containers</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../persistence/" class="subnavigation__link">Session Persistence</a>
+        <a href="/persistence/" class="subnavigation__link">Session Persistence</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../middleware/" class="subnavigation__link">Session Middleware</a>
+        <a href="/middleware/" class="subnavigation__link">Session Middleware</a>
     </li>
 
                             
@@ -459,11 +325,11 @@ often related to session data, you may want to consider the following packages:<
 </footer>
 
     <script>
-        var base_url = '..',
+        var base_url = '/',
             siteName = 'zend-expressive-session';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="//js/scripts-8d7ae56abf.js"></script>
+        <script src="/search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
