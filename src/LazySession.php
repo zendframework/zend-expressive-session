@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive\Session;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Expressive\Session\Exception\NotInitializableException;
 
 /**
  * Proxy to an underlying SessionInterface implementation.
@@ -22,7 +23,8 @@ use Psr\Http\Message\ServerRequestInterface;
 final class LazySession implements
     SessionCookiePersistenceInterface,
     SessionIdentifierAwareInterface,
-    SessionInterface
+    SessionInterface,
+    InitializeSessionIdInterface
 {
     /**
      * @var SessionPersistenceInterface
@@ -143,6 +145,17 @@ final class LazySession implements
             ? $proxiedSession->getSessionLifetime()
             : 0;
     }
+
+    public function initializeId(): string
+    {
+        if (! $this->persistence instanceof InitializePersistenceIdInterface) {
+            throw NotInitializableException::invalidPersistence($this->persistence);
+        }
+
+        $this->proxiedSession = $this->persistence->initializeId($this->getProxiedSession());
+        return $this->proxiedSession->getId();
+    }
+
 
     private function getProxiedSession() : SessionInterface
     {
