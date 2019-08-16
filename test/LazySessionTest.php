@@ -12,14 +12,22 @@ namespace ZendTest\Expressive\Session\LazySessionTest;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Expressive\Session\Exception\NotInitializableException;
 use Zend\Expressive\Session\LazySession;
+use Zend\Expressive\Session\Session;
 use Zend\Expressive\Session\SessionCookiePersistenceInterface;
 use Zend\Expressive\Session\SessionIdentifierAwareInterface;
 use Zend\Expressive\Session\SessionInterface;
 use Zend\Expressive\Session\SessionPersistenceInterface;
+use Zend\Expressive\Session\InitializePersistenceIdInterface;
 
 class LazySessionTest extends TestCase
 {
+    private $proxy;
+    private $persistence;
+    private $request;
+    private $session;
+
     public function setUp()
     {
         $this->proxy = $this->prophesize(SessionInterface::class);
@@ -219,5 +227,34 @@ class LazySessionTest extends TestCase
         $session = new LazySession($this->persistence->reveal(), $this->request->reveal());
 
         $this->assertSame(60, $session->getSessionLifetime());
+    }
+
+    public function testInitializeIdThrowsNotInitializeableException()
+    {
+        $this->expectException(NotInitializableException::class);
+        $this->session->initializeId();
+    }
+
+    public function testGenerateIdReturnsId()
+    {
+        $newProxy = $this->prophesize(SessionInterface::class);
+        $newProxy->willImplement(SessionIdentifierAwareInterface::class);
+        $newProxy->getId()
+            ->willReturn('generated-id');
+        $proxy = $newProxy->reveal();
+
+        $persistence = $this->prophesize(SessionPersistenceInterface::class);
+        $persistence->willImplement(InitializePersistenceIdInterface::class);
+        $persistence
+            ->initializeId(Argument::that([$this->proxy, 'reveal']))
+            ->willReturn($proxy);
+
+        $this->assertProxyCreated($persistence, $this->request);
+
+        $session = new LazySession($persistence->reveal(), $this->request->reveal());
+        $actual = $session->initializeId();
+
+        $this->assertAttributeSame($proxy, 'proxiedSession', $session);
+        $this->assertSame('generated-id', $actual);
     }
 }
