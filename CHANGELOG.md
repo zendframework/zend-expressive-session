@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- Added `InitializeSessionIdInterface` and `InitializePersistenceIdInterface`. These add `initializeId()` methods to
+  session and persistence, allowing developers to access new or regenerated session IDs before the session is persisted.
 
 ### Changed
 
