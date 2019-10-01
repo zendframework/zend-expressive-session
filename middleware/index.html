@@ -277,7 +277,7 @@ persistence instance to persist the session data and provide information back to
 the client.</p>
 <p>The above two paragraphs are longer than the body of the middleware
 implementation:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Session;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Session;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -301,8 +301,7 @@ class SessionMiddleware implements MiddlewareInterface
         $response = $handler-&gt;handle($request-&gt;withAttribute(self::SESSION_ATTRIBUTE, $session));
         return $this-&gt;persistence-&gt;persistSession($session, $response);
     }
-}</code></pre>
-
+}</code></pre></p>
 <h2 id="configuration">Configuration</h2>
 <p>This package provides a factory for <code>Zend\Expressive\Session\SessionMiddleware</code>
 via <code>Zend\Expressive\Session\SessionMiddlewareFactory</code>; this factory is
@@ -316,9 +315,8 @@ have the package providing it do so for you.</p>
 it available anywhere, pipe it early in your application, prior to any routing.
 As an example, within Expressive, you could pipe it in the <code>config/pipeline.php</code>
 file:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Session\SessionMiddleware::class);
-$app-&gt;pipeRoutingMiddleware();</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(\Zend\Expressive\Session\SessionMiddleware::class);
+$app-&gt;pipeRoutingMiddleware();</code></pre></p>
 <p>This will generally be an inexpensive operation; since the middleware uses a
 <code>LazySession</code> instance, unless your persistence implementation does any work in
 its constructor, the cost is just that of instantiating a few objects.</p>
@@ -327,10 +325,10 @@ the routed middleware pipelines, to ensure other developers are aware of its
 presence in that route's workflow.</p>
 <p>Within Expressive, you can do this when routing, in your <code>config/routes.php</code>
 file, or within a <a href="https://docs.zendframework.com/zend-expressive/cookbook/autowiring-routes-and-pipelines/#delegator-factories">delegator factory</a>:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;post('/login', [
+<p> <pre class=codehilite><code class=language-php>$app-&gt;post('/login', [
     \Zend\Expressive\Session\SessionMiddleware::class,
     \User\Middleware\LoginHandler::class
-]);</code></pre>
+]);</code></pre></p>
 
 
 
@@ -360,7 +358,7 @@ file, or within a <a href="https://docs.zendframework.com/zend-expressive/cookbo
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/middleware.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/book/middleware.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

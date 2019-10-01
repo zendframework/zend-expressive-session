@@ -277,7 +277,7 @@ following:</p>
 session data is provided <em>by</em> the client, and provided <em>to</em> the client directly,
 without any server-side storage whatsoever.</p>
 <p>To describe these operations, we provide <code>Zend\Expressive\Session\SessionPersistenceInterface</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Session;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Session;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -296,8 +296,7 @@ interface SessionPersistenceInterface
      * artifacts required to return to the client.
      */
     public function persistSession(SessionInterface $session, ResponseInterface $response) : ResponseInterface;
-}</code></pre>
-
+}</code></pre></p>
 <p>Session initialization pulls data from the request (a cookie, a header value,
 etc.) in order to produce a session container. Session persistence pulls data
 from the session container, does something with it, and then optionally provides
@@ -358,10 +357,9 @@ following:</p>
 </ul>
 <p>In each case, the persistence engine should query the <code>Session</code> instance for a
 TTL value:</p>
-<pre class="codehilite"><code class="language-php">$ttl = $session instanceof SessionContainerPersistenceInterface
+<p> <pre class=codehilite><code class=language-php>$ttl = $session instanceof SessionContainerPersistenceInterface
     ? $session-&gt;getSessionLifetime()
-    : $defaultLifetime; // likely 0, to indicate automatic expiry</code></pre>
-
+    : $defaultLifetime; // likely 0, to indicate automatic expiry</code></pre></p>
 <p><code>getSessionLifetime()</code> returns an <code>integer</code> value indicating the number of
 seconds the session should persist.</p>
 
@@ -397,7 +395,7 @@ seconds the session should persist.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/persistence.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/book/persistence.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

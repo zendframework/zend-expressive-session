@@ -274,7 +274,7 @@
 developers will work; they contain the data currently in the session, and allow
 you to push data to the session.</p>
 <p>All session containers implement <code>Zend\Expressive\Session\SessionInterface</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Session;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Session;
 
 interface SessionInterface
 {
@@ -340,12 +340,11 @@ interface SessionInterface
      * true if the instance was produced via regenerate().
      */
     public function isRegenerated() : bool;
-}</code></pre>
-
+}</code></pre></p>
 <p>The default implementation, and the one you'll most likely interact with, is
 <code>Zend\Expressive\Session\Session</code>.</p>
 <p>Since version 1.1.0, we provide <code>Zend\Expressive\Session\SessionIdentifierAwareInterface</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Session;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Session;
 
 interface SessionIdentifierAwareInterface
 {
@@ -363,15 +362,14 @@ interface SessionIdentifierAwareInterface
      * @since 1.1.0
      */
     public function getId() : string;
-}</code></pre>
-
+}</code></pre></p>
 <p>Since version 1.2.0, we provide <code>Zend\Expressive\Session\SessionCookiePersistenceInterface</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Session;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Session;
 
 /**
  * Allow marking session cookies as persistent.
  *
- * It can be useful to mark a session as persistent: e.g., for a "Remember Me"
+ * It can be useful to mark a session as persistent: e.g., for a &quot;Remember Me&quot;
  * feature when logging a user into your system. PHP provides this capability
  * via ext-session with the $lifetime argument to session_set_cookie_params()
  * as well as by the session.cookie_lifetime INI setting. The latter will set
@@ -427,8 +425,7 @@ interface SessionCookiePersistenceInterface
      *   the SESSION_LIFETIME_KEY value of the session.
      */
     public function getSessionLifetime() : int;
-}</code></pre>
-
+}</code></pre></p>
 <p><code>Zend\Expressive\Session\Session</code> and <code>Zend\Expressive\Session\LazySession</code> both
 implement each of the interfaces listed above. <code>Session</code> accepts an optional
 identifier to its constructor, and will use the value of the
@@ -440,34 +437,27 @@ to seed the session cookie lifetime, if present.</p>
 <code>Zend\Expressive\Session\SessionMiddleware::SESSION_ATTRIBUTE</code> ("session")
 request attribute.</p>
 <p>Once you have the container, you can check for data:</p>
-<pre class="codehilite"><code class="language-php">if ($session-&gt;has('user')) {
-}</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>if ($session-&gt;has('user')) {
+}</code></pre></p>
 <p>and retrieve it:</p>
-<pre class="codehilite"><code class="language-php">$user = $session-&gt;get('user');</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$user = $session-&gt;get('user');</code></pre></p>
 <p>You can combine those operations, by passing a default value as a second
 argument to the <code>get()</code> method:</p>
-<pre class="codehilite"><code class="language-php">$user = $session-&gt;get('user', new GuestUser());</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$user = $session-&gt;get('user', new GuestUser());</code></pre></p>
 <p>If a datum is no longer relevant in the session, <code>unset()</code> it:</p>
-<pre class="codehilite"><code class="language-php">$session-&gt;unset('user');</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$session-&gt;unset('user');</code></pre></p>
 <p>If none of the data is relevant, <code>clear()</code> the session:</p>
-<pre class="codehilite"><code class="language-php">$session-&gt;clear();</code></pre>
-
-<h3 id="persistent-sessions">Persistent Sessions</h3>
+<p> <pre class=codehilite><code class=language-php>$session-&gt;clear();</code></pre></p>
+<h3>Persistent Sessions</h3>
 <ul>
 <li>Since 1.2.0</li>
 </ul>
 <p>You can hint to the session persistence engine how long the session should
 persist:</p>
-<pre class="codehilite"><code class="language-php">$session-&gt;persistSessionFor(60 * 60 * 24 * 7); // persist for 7 days</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$session-&gt;persistSessionFor(60 * 60 * 24 * 7); // persist for 7 days</code></pre></p>
 <p>To make the session expire when the browser session is terminated (default
 behavior), use zero or a negative integer:</p>
-<pre class="codehilite"><code class="language-php">$session-&gt;persistSessionFor(0); // expire data after session is over</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$session-&gt;persistSessionFor(0); // expire data after session is over</code></pre></p>
 <h2 id="lazy-sessions">Lazy Sessions</h2>
 <p>This package provides another implementation of <code>SessionInterface</code> via
 <code>Zend\Expressive\Session\LazySession</code>. This implementation does the following:</p>
@@ -487,8 +477,7 @@ after a user has successfully logged in or out, you will generally want to
 regenerate the session in order to prevent session fixation and the attack
 vectors it invites.</p>
 <p>In those situations, call <code>regenerate()</code>:</p>
-<pre class="codehilite"><code class="language-php">$newSession = $session-&gt;regenerate();</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$newSession = $session-&gt;regenerate();</code></pre></p>
 <p>The interface indicates that a new instance <em>should</em> be returned. However, in
 the default usage, you will have a <code>LazySession</code> instance (as described above),
 which <em>decorates</em> the underlying session storage. This is done for two reasons:</p>
@@ -533,7 +522,7 @@ deep in your application, but still have the data persisted correctly.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/session.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/book/session.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>
