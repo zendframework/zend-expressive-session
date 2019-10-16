@@ -2,33 +2,11 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.3.0 - TBD
+## 1.3.0 - 2019-10-16
 
 ### Added
 
 - [#38](https://github.com/zendframework/zend-expressive-session/pull/38) adds `InitializeSessionIdInterface` and `InitializePersistenceIdInterface`. These add `initializeId()` methods to session and persistence, allowing developers to access new or regenerated session IDs before the session is persisted.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.2.2 - TBD
-
-### Added
-
-- Nothing.
 
 ### Changed
 
