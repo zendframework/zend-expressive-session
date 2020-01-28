@@ -6,17 +6,22 @@
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://docs.zendframework.com/v1/intro/</loc>
+     <loc>https://docs.zendframework.com/intro/</loc>
      <lastmod>2020-01-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://docs.zendframework.com/v1/config/</loc>
+     <loc>https://docs.zendframework.com/session/</loc>
      <lastmod>2020-01-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://docs.zendframework.com/v1/manual/</loc>
+     <loc>https://docs.zendframework.com/persistence/</loc>
+     <lastmod>2020-01-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>https://docs.zendframework.com/middleware/</loc>
      <lastmod>2020-01-28</lastmod>
      <changefreq>daily</changefreq>
     </url>

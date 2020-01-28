@@ -6,11 +6,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PSR-6 session persistence adapter for zend-expressive-session.">  
-    <link rel="canonical" href="https://docs.zendframework.com/v1/manual/">
-    <link rel="shortcut icon" href="../../img/favicon.ico">
+    <meta name="description" content="Sessions and session middleware for PSR-7 applications.">  
+    <link rel="canonical" href="https://docs.zendframework.com/persistence/">
+    <link rel="shortcut icon" href="../img/favicon.ico">
 
-    <title>Manual Usage - zend-expressive-session-cache - Zend Framework Docs</title>
+    <title>Session Persistence - zend-expressive-session - Zend Framework Docs</title>
 
     <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -32,7 +32,7 @@
             
             <span class="navbar-brand">
                 <a class="logo-link" href="https://framework.zend.com/" data-tooltip data-placement="bottom" title="Go to the ZF homepage">
-                    <img src="../../img/zend-framework-logo.svg" height="28" alt="Zend Framework">
+                    <img src="../img/zend-framework-logo.svg" height="28" alt="Zend Framework">
                 </a>
             </span>
         </div>
@@ -67,12 +67,26 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="../..">zend-expressive-session-cache</a>
+            <a href="..">zend-expressive-session</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
 
         <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item ">
+                                <a href=".." class="subnavigation__link">zend-expressive-session</a>
+                            </li>
+                        
+                    
+                
             
 
                 
@@ -95,22 +109,29 @@
                     
                     
                         
-                            <li class="subnavigation__list-item ">
-                                <a href="../config/" class="subnavigation__link">Configuration</a>
-                            </li>
-                        
-                    
-                
-            
+                            <li class="subnavigation__list-item">
+                                <span class="subnavigation__headline">Usage</span>
+                                <ul class="subnavigation__list">
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../session/" class="subnavigation__link">Session Containers</a>
+    </li>
 
-                
-                
+                                    
+                                        
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Session Persistence</a>
+    </li>
 
-                    
-                    
-                        
-                            <li class="subnavigation__list-item subnavigation__list-item--active">
-                                <a href="./" class="subnavigation__link">Manual Usage</a>
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../middleware/" class="subnavigation__link">Session Middleware</a>
+    </li>
+
+                                    
+                                </ul>
                             </li>
                         
                     
@@ -148,7 +169,7 @@
                     Documentation
 
                     
-                        <small class="header__subtitle">zend-expressive-session-cache</small>
+                        <small class="header__subtitle">zend-expressive-session</small>
                     
                 </h1>
             </div>
@@ -161,7 +182,7 @@
                     <a href="#" class="header__link header__link--search" data-toggle="modal" data-target="#mkdocs_search_modal" title="Open search">
                         <i class="fa fa-search"></i> Search
                     </a>
-                    <a href="https://github.com/zendframework/zend-expressive-session-cache/" class="header__link header__link--github" title="Go to repository of zend-expressive-session-cache">
+                    <a href="https://github.com/zendframework/zend-expressive-session/" class="header__link header__link--github" title="Go to repository of zend-expressive-session">
                         <i class="fa fa-github"></i> GitHub
                     </a>
                 
@@ -175,7 +196,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12"><strong>
-                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio-session-cache/">mezzio/mezzio-session-cache.</a>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio-session/">mezzio/mezzio-session.</a>
             </strong></div>
         </div>
     </div>
@@ -194,11 +215,18 @@
         <li><a href="https://docs.zendframework.com/">Documentation</a></li>
 
         
-            <li><a href="../..">zend-expressive-session-cache</a></li>
+            <li><a href="..">zend-expressive-session</a></li>
 
             
+                
+                    
+                    
+                        <li>Usage</li>
+                    
+                
+            
 
-            <li class="active">Manual Usage</li>
+            <li class="active">Session Persistence</li>
         
     
 </ol>
@@ -210,6 +238,8 @@
 
     
     
+        <h2 class="chapter__headline">Usage</h2>
+    
 
     <div>
         
@@ -217,74 +247,125 @@
 
     
     
+        <div class="toc">
+            <h6 class="toc__headline">In This Article</h6>
+            <ul class="toc__list">
+                
+                    <li class="toc__entry">
+                        <a href="#session-identifiers" class="toc__link">Session identifiers</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#persistent-sessions" class="toc__link">Persistent sessions</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
 
     </div>
 
-    <h1 id="manual-usage">Manual usage</h1>
-<p>The following details the constructor of the <code>Zend\Expressive\Session\Cache\CacheSessionPersistence</code> class:</p>
-<pre><code class="language-php">/**
- * Prepare session cache and default HTTP caching headers.
- *
- * @param CacheItemPoolInterface $cache The cache pool instance
- * @param string $cookieName The name of the cookie
- * @param string $cacheLimiter The cache limiter setting is used to
- *     determine how to send HTTP client-side caching headers. Those
- *     headers will be added programmatically to the response along with
- *     the session set-cookie header when the session data is persisted.
- * @param int $cacheExpire Number of seconds until the session cookie
- *     should expire; defaults to 180 minutes (180m * 60s/m = 10800s),
- *     which is the default of the PHP session.cache_expire setting. This
- *     is also used to set the TTL for session data.
- * @param null|int $lastModified Timestamp when the application was last
- *     modified. If not provided, this will look for each of
- *     public/index.php, index.php, and finally the current working
- *     directory, using the filemtime() of the first found.
- * @param bool $persistent Whether or not to create a persistent cookie. If
- *     provided, this sets the Expires directive for the cookie based on
- *     the value of $cacheExpire. Developers can also set the expiry at
- *     runtime via the Session instance, using its persistSessionFor()
- *     method; that value will be honored even if global persistence
- *     is toggled true here.
- * @param string|null $cookieDomain The domain for the cookie. If not set,
- *     the current domain is used.
- * @param bool $cookieSecure Whether or not the cookie should be required
- *     to be set over an encrypted connection
- * @param bool $cookieHttpOnly Whether or not the cookie may be accessed
- *     by client-side apis (e.g., Javascript). An http-only cookie cannot
- *     be accessed by client-side apis.
- *
- * @todo reorder these arguments so they make more sense and are in an
- *     order of importance
- */
-public function __construct(
-    CacheItemPoolInterface $cache,
-    string $cookieName,
-    string $cookiePath = '/',
-    string $cacheLimiter = 'nocache',
-    int $cacheExpire = 10800,
-    ?int $lastModified = null,
-    bool $persistent = false,
-    string $cookieDomain = null,
-    bool $cookieSecure = false,
-    bool $cookieHttpOnly = false
-) {
+    <h1 id="session-persistence">Session Persistence</h1>
+<p>Session persistence within zend-expressive-session refers to one or both of the
+following:</p>
+<ul>
+<li>Identifying session information provided by the client making the request.</li>
+<li>Storing session data for access on subsequent requests.</li>
+<li>Providing session information to the client making the request.</li>
+</ul>
+<p>In some scenarios, such as usage of JSON Web Tokens (JWT), the serialized
+session data is provided <em>by</em> the client, and provided <em>to</em> the client directly,
+without any server-side storage whatsoever.</p>
+<p>To describe these operations, we provide <code>Zend\Expressive\Session\SessionPersistenceInterface</code>:</p>
+<pre><code class="language-php">namespace Zend\Expressive\Session;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+interface SessionPersistenceInterface
+{
+    /**
+     * Generate a session data instance based on the request.
+     */
+    public function initializeSessionFromRequest(ServerRequestInterface $request) : SessionInterface;
+
+    /**
+     * Persist the session data instance.
+     *
+     * Persists the session data, returning a response instance with any
+     * artifacts required to return to the client.
+     */
+    public function persistSession(SessionInterface $session, ResponseInterface $response) : ResponseInterface;
+}
 </code></pre>
 
-<p>Pass all required values and any optional values when creating an instance:</p>
-<pre><code class="language-php">use Cache\Adapter\Predis\PredisCachePool;
-use Zend\Expressive\Session\Cache\CacheSessionPersistence;
-use Zend\Expressive\Session\SessionMiddleware;
-
-$cachePool = new PredisCachePool('tcp://localhost:6379');
-$persistence = new CacheSessionPersistence(
-    $cachePool,
-    'MYSITE'
-    '/',
-    'public',
-    60 * 60 * 24 * 30 // 30 days
-);
-$middleware = new SessionMiddleware($persistence);
+<p>Session initialization pulls data from the request (a cookie, a header value,
+etc.) in order to produce a session container. Session persistence pulls data
+from the session container, does something with it, and then optionally provides
+a response containing session artifacts (a cookie, a header value, etc.).</p>
+<p>For sessions to work, <em>you must provide a persistence implementation</em>. We
+provide one such implementation using PHP's session extension via the package
+<a href="https://github.com/zendframework/zend-expressive-session-ext">zend-expressive-session-ext</a>.</p>
+<h2 id="session-identifiers">Session identifiers</h2>
+<p>Typically, the session identifier will be retrieved from the request (usually
+via a cookie), and a new identifier created if none was discovered.</p>
+<p>During persistence, if an existing session's contents have changed, or
+<code>regenerateId()</code> was called on the session, the persistence implementation
+becomes responsible for:</p>
+<ul>
+<li>Removing the original session.</li>
+<li>Generating a new identifier for the session.</li>
+</ul>
+<p>In all situations, it then needs to store the session data in such a way that a
+later lookup by the current identifier will retrieve that data.</p>
+<p>Prior to version 1.1.0, persistence engines had two ways to determine what the
+original session identifier was when it came time to regenerate or persist a
+session:</p>
+<ul>
+<li>Store the identifier as a property of the persistence implementation.</li>
+<li>Store the identifier in the session data under a "magic" key (e.g.,
+  <code>__SESSION_ID__</code>).</li>
+</ul>
+<p>The first approach is problematic when using zend-expressive-session in an async
+environment such as <a href="https://swoole.co.uk">Swoole</a> or
+<a href="https://reactphp.org">ReactPHP</a>, as the same persistence instance may be used
+by several simultaneous requests. As such, version 1.1.0 introduces a new
+interface for <code>Zend\Expressive\Session\SessionInterface</code> implementations to use:
+<code>Zend\Expressive\Session\SessionIdentifierAwareInterface</code>. This interface
+defines a single method, <code>getId()</code>; implementations can thus store the
+identifier internally, and, when it comes time to store the session data,
+persistence implementations can query that method in order to retrieve the
+session identifier.</p>
+<p>Considering that persistence implementations also <em>create</em> the session instance,
+we recommend that implementations only create instances that implement the
+<code>SessionIdentifierAwareInterface</code> going forward in order to make themselves
+async compatible.</p>
+<h2 id="persistent-sessions">Persistent sessions</h2>
+<ul>
+<li>Since 1.2.0.</li>
+</ul>
+<p>If your persistence implementation supports persistent sessions &mdash; for
+example, by setting an <code>Expires</code> or <code>Max-Age</code> cookie directive &mdash; then you
+can opt to globally set a default session duration, or allow developers to hint
+a desired session duration via the session container using
+<code>SessionContainerPersistenceInterface::persistSessionFor()</code>.</p>
+<p>Implementations SHOULD honor the value of <code>SessionContainerPersistenceInterface::getSessionLifetime()</code>
+when persisting the session data. This could mean either or both of the
+following:</p>
+<ul>
+<li>Ensuring that the session data will not be purged until after the specified
+  TTL value.</li>
+<li>Setting an <code>Expires</code> or <code>Max-Age</code> cookie directive.</li>
+</ul>
+<p>In each case, the persistence engine should query the <code>Session</code> instance for a
+TTL value:</p>
+<pre><code class="language-php">$ttl = $session instanceof SessionContainerPersistenceInterface
+    ? $session-&gt;getSessionLifetime()
+    : $defaultLifetime; // likely 0, to indicate automatic expiry
 </code></pre>
+
+<p><code>getSessionLifetime()</code> returns an <code>integer</code> value indicating the number of
+seconds the session should persist.</p>
 
 
 
@@ -295,7 +376,7 @@ $middleware = new SessionMiddleware($persistence);
         
         <li class="page-nav__item">
             
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../config/">
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../session/">
                     <i class="fa fa-chevron-left"></i> Previous
                 </a>
             
@@ -303,6 +384,10 @@ $middleware = new SessionMiddleware($persistence);
 
         
         <li class="page-nav__item">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../middleware/">
+                    Next <i class="fa fa-chevron-right"></i>
+                </a>
             
         </li>
     </ul>
@@ -314,7 +399,7 @@ $middleware = new SessionMiddleware($persistence);
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive-session-cache/edit/master/docs/book/v1/manual.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive-session/edit/master/docs/book/persistence.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>
@@ -336,12 +421,26 @@ $middleware = new SessionMiddleware($persistence);
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="../..">zend-expressive-session-cache</a>
+            <a href="..">zend-expressive-session</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
 
         <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item ">
+                                <a href=".." class="subnavigation__link">zend-expressive-session</a>
+                            </li>
+                        
+                    
+                
             
 
                 
@@ -364,22 +463,29 @@ $middleware = new SessionMiddleware($persistence);
                     
                     
                         
-                            <li class="subnavigation__list-item ">
-                                <a href="../config/" class="subnavigation__link">Configuration</a>
-                            </li>
-                        
-                    
-                
-            
+                            <li class="subnavigation__list-item">
+                                <span class="subnavigation__headline">Usage</span>
+                                <ul class="subnavigation__list">
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../session/" class="subnavigation__link">Session Containers</a>
+    </li>
 
-                
-                
+                                    
+                                        
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Session Persistence</a>
+    </li>
 
-                    
-                    
-                        
-                            <li class="subnavigation__list-item subnavigation__list-item--active">
-                                <a href="./" class="subnavigation__link">Manual Usage</a>
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../middleware/" class="subnavigation__link">Session Middleware</a>
+    </li>
+
+                                    
+                                </ul>
                             </li>
                         
                     
@@ -457,11 +563,11 @@ $middleware = new SessionMiddleware($persistence);
 </nav>
 
     <script>
-        var base_url = '../..',
-            siteName = 'zend-expressive-session-cache';
+        var base_url = '..',
+            siteName = 'zend-expressive-session';
     </script>
     <script src="/js/scripts.js"></script>
-    <script src="../../search/main.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
